@@ -20,6 +20,21 @@ public class GameOfLifeTest {
         new GameOfLife().getLiveCells();
     }
 
+    @Test(expected = RuntimeException.class)
+    public void testSetBoundaryWithNull() {
+        new GameOfLife().setBoundary(null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSeedGameWithNull() {
+        new GameOfLife().setBoundary("3|4").seedGame((String)null);
+    }
+
+    @Test(expected = RuntimeException.class)
+    public void testSeedGameWithEmptyString() {
+        new GameOfLife().setBoundary("3|4").seedGame("");
+    }
+
     @Test
     public void testSeed() {
         final GameOfLife gameOfLife = new GameOfLife().setBoundary("3|4").seedGame("1|1, 1|2, 1|3");
