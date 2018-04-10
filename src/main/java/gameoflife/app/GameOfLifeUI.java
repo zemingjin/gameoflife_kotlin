@@ -9,7 +9,6 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -166,15 +165,18 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
+        Function<Integer, Consumer<Integer>> fillRow = fillCell.apply(graphics);
+        Function<Integer, Consumer<Integer>> drawRow = drawBorder.apply(graphics);
+
         IntStream.range(0, dimension.getY())
                 .forEach(y -> {
-                    paintRow(fillCell.apply(graphics, y));
-                    paintRow(drawBorder.apply(graphics, y));
+                    paintRow(fillRow.apply(y));
+                    paintRow(drawRow.apply(y));
                 });
     }
 
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> fillCell =
-            (graphics, y) -> x -> {
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell =
+            graphics -> y -> x -> {
                 graphics.setColor(getColor(x, y));
                 graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
             };
@@ -195,8 +197,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         return index * cellSize;
     }
 
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> drawBorder =
-            (graphics, y) -> x -> {
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder =
+            graphics -> y -> x -> {
                 graphics.setColor(getForeground());
                 graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
             };
