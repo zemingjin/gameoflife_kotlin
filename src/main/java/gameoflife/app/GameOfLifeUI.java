@@ -165,8 +165,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        Function<Integer, Consumer<Integer>> fillRow = fillCell.apply(graphics);
-        Function<Integer, Consumer<Integer>> drawRow = drawBorder.apply(graphics);
+        final Function<Integer, Consumer<Integer>> fillRow = fillCell.apply(graphics);
+        final Function<Integer, Consumer<Integer>> drawRow = drawBorder.apply(graphics);
 
         IntStream.range(0, dimension.getY())
                 .forEach(y -> {
