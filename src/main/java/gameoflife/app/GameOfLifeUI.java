@@ -165,8 +165,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        final Function<Integer, Consumer<Integer>> fillRow = fillCell.apply(graphics);
-        final Function<Integer, Consumer<Integer>> drawRow = drawBorder.apply(graphics);
+        final Function<Integer, Consumer<Integer>> fillRow = fill.apply(graphics);
+        final Function<Integer, Consumer<Integer>> drawRow = draw.apply(graphics);
 
         IntStream.range(0, boundary.getY())
                 .forEach(y -> {
@@ -175,10 +175,21 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 });
     }
 
-    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell =
+    private void paintRow(Consumer<Integer> actor) {
+        IntStream.range(0, boundary.getX())
+                .forEach(actor::accept);
+    }
+
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fill =
             graphics -> y -> x -> {
                 graphics.setColor(getColor(x, y));
                 graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+            };
+
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> draw =
+            graphics -> y -> x -> {
+                graphics.setColor(getForeground());
+                graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
             };
 
     private Color getColor(int x, int y) {
@@ -195,17 +206,6 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int getCellPosition(int index) {
         return index * cellSize;
-    }
-
-    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder =
-            graphics -> y -> x -> {
-                graphics.setColor(getForeground());
-                graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-            };
-
-    private void paintRow(Consumer<Integer> actor) {
-        IntStream.range(0, boundary.getX())
-                .forEach(actor::accept);
     }
 
     private void waitAWhile() {
