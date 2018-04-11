@@ -165,14 +165,13 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public void paint(Graphics graphics) {
-        final Function<Integer, Consumer<Integer>> fill = fillCell().apply(graphics);
-        final Function<Integer, Consumer<Integer>> drawRow = drawBorder().apply(graphics);
+        final Function<Integer, Consumer<Integer>> fill = fillCell.apply(graphics);
+        final Function<Integer, Consumer<Integer>> drawRow = drawBorder.apply(graphics);
 
-        IntStream.range(0, boundary.getY())
-                .forEach(y -> {
-                    paintRow(fill.apply(y));
-                    paintRow(drawRow.apply(y));
-                });
+        IntStream.range(0, boundary.getY()).forEach(y -> {
+            paintRow(fill.apply(y));
+            paintRow(drawRow.apply(y));
+        });
     }
 
     private void paintRow(Consumer<Integer> actor) {
@@ -180,19 +179,15 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 .forEach(actor::accept);
     }
 
-    private Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell() {
-        return graphics -> y -> x -> {
-            graphics.setColor(getColor(x, y));
-            graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
-        };
-    }
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell = graphics -> y -> x -> {
+        graphics.setColor(getColor(x, y));
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+    };
 
-    private Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder() {
-        return graphics -> y -> x -> {
-            graphics.setColor(getForeground());
-            graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-        };
-    }
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder = graphics -> y -> x -> {
+        graphics.setColor(getForeground());
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+    };
 
     private Color getColor(int x, int y) {
         return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
