@@ -75,7 +75,7 @@ public class GameOfLife {
                 .mapToObj(x -> new Cell(x, y));
     }
 
-    public Boundary getDimension() {
+    public Boundary getBoundary() {
         return boundary;
     }
 
