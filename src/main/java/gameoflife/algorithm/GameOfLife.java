@@ -20,11 +20,10 @@ public class GameOfLife {
      * @return this
      */
     GameOfLife setBoundary(String boundary) {
-        Optional.ofNullable(boundary)
+        return Optional.ofNullable(boundary)
                 .map(input -> getCellFromString(input, Boundary::new))
                 .map(this::setBoundary)
                 .orElseThrow(() -> new RuntimeException("Invalid boundary: null input"));
-        return this;
     }
 
     /**
@@ -33,12 +32,11 @@ public class GameOfLife {
      * @return self
      */
     GameOfLife seedGame(String seeds) {
-        Optional.ofNullable(seeds)
+        return Optional.ofNullable(seeds)
                 .filter(input -> !input.isEmpty())
                 .map(this::seedLiveCells)
                 .map(this::setLiveCells)
                 .orElseThrow(() -> new RuntimeException(String.format("Invalid seeds: '%s'", seeds)));
-        return this;
     }
 
     private Map<String, Cell> seedLiveCells(String seeds) {
@@ -55,7 +53,7 @@ public class GameOfLife {
      * @return this
      */
     public GameOfLife seedGame(String[] seeds) {
-        this.boundary = getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
+        setBoundary(getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new));
         return setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
     }
 
