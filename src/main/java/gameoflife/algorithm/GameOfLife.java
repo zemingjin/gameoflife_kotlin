@@ -56,8 +56,7 @@ public class GameOfLife {
      */
     public GameOfLife seedGame(String[] seeds) {
         this.boundary = getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
-        setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
-        return this;
+        return setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
     }
 
     private String getBoundaryFromHeader(String seed) {
