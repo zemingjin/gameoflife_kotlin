@@ -9,6 +9,7 @@ import java.util.stream.Stream;
 public class GameOfLife {
     private static final char LIVE_CELL = 'O';
     private static final String INDICES_DELIMITER = "\\|";
+    private static final String CELL_DELIMITER = ", ";
 
     private Boundary boundary;
     private Map<String, Cell> liveCells;
@@ -39,7 +40,7 @@ public class GameOfLife {
     }
 
     private Map<String, Cell> seedLiveCells(String seeds) {
-        return Stream.of(seeds.split(", "))
+        return Stream.of(seeds.split(CELL_DELIMITER))
                 .map(seed -> getCellFromString(seed, Cell::new))
                 .filter(boundary::isInBound)
                 .collect(Collectors.toMap(Cell::toString, cell -> cell));
