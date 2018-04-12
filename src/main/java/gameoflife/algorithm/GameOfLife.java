@@ -11,8 +11,7 @@ public class GameOfLife {
     private static final String INDICES_DELIMITER = "\\|";
 
     private Boundary boundary;
-    private List<Cell> liveCells = new ArrayList<>();
-    private Map<String, Cell> liveCellsMap;
+    private Map<String, Cell> liveCells;
 
     /**
      * This method is only called by tests
@@ -34,16 +33,16 @@ public class GameOfLife {
     GameOfLife seedGame(String seeds) {
         Optional.ofNullable(seeds)
                 .filter(input -> !input.isEmpty())
-                .map(input -> setLiveCellsWithMap(seedLiveCells(input)))
+                .map(input -> setLiveCells(seedLiveCells(input)))
                 .orElseThrow(() -> new RuntimeException(String.format("Invalid seeds: '%s'", seeds)));
         return this;
     }
 
-    private List<Cell> seedLiveCells(String seeds) {
+    private Map<String, Cell> seedLiveCells(String seeds) {
         return Stream.of(seeds.split(", "))
                 .map(seed -> getCellFromString(seed, Cell::new))
                 .filter(boundary::isInBound)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     /**
@@ -54,7 +53,7 @@ public class GameOfLife {
      */
     public GameOfLife seedGame(String[] seeds) {
         this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
-        setLiveCellsWithMap(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
+        setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
 
@@ -62,11 +61,11 @@ public class GameOfLife {
         return seed.split(" ")[1];
     }
 
-    private List<Cell> seedLiveCells(String[] seeds) {
+    private Map<String, Cell> seedLiveCells(String[] seeds) {
         return IntStream.range(0, Math.min(seeds.length, boundary.getY()))
                 .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
                 .flatMap(stream -> stream)
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     private Stream<Cell> getLiveCellsFromRow(String line, int y) {
@@ -84,33 +83,27 @@ public class GameOfLife {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return liveCellsMap.get(Cell.getString(x, y)) != null;
+        return liveCells.get(Cell.getString(x, y)) != null;
     }
 
-    List<Cell> getLiveCells() {
+    Collection<Cell> getLiveCells() {
         return Optional.of(liveCells)
                 .filter(cells -> !cells.isEmpty())
+                .map(Map::values)
                 .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
-    private List<Cell> setLiveCellsWithMap(List<Cell> liveCells) {
-        this.liveCells = liveCells;
-        liveCellsMap = getLiveCellsMap(liveCells);
-        return liveCells;
+    private Map<String, Cell> setLiveCells(Map<String, Cell> liveCells) {
+        return this.liveCells = liveCells;
     }
 
-    private Map<String, Cell> getLiveCellsMap(List<Cell> liveCells) {
-        return liveCells.stream()
-                .collect(Collectors.toMap(Cell::toString, cell -> cell));
+    public Map<String, Cell> evolve() {
+        return setLiveCells(tick());
     }
 
-    public List<Cell> evolve() {
-        return setLiveCellsWithMap(tick());
-    }
-
-    private List<Cell> tick() {
+    private Map<String, Cell> tick() {
         return Stream.concat(getNextGenerationCells(), getReproductionCells())
-                .collect(Collectors.toList());
+                .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     private Stream<Cell> getNextGenerationCells() {
