@@ -21,7 +21,8 @@ public class GameOfLife {
      */
     GameOfLife setBoundary(String boundary) {
         Optional.ofNullable(boundary)
-                .map(input -> this.boundary = getCellFromString(input, Boundary::new))
+                .map(input -> getCellFromString(input, Boundary::new))
+                .map(this::setBoundary)
                 .orElseThrow(() -> new RuntimeException("Invalid boundary: null input"));
         return this;
     }
@@ -34,7 +35,8 @@ public class GameOfLife {
     GameOfLife seedGame(String seeds) {
         Optional.ofNullable(seeds)
                 .filter(input -> !input.isEmpty())
-                .map(input -> setLiveCells(seedLiveCells(input)))
+                .map(this::seedLiveCells)
+                .map(this::setLiveCells)
                 .orElseThrow(() -> new RuntimeException(String.format("Invalid seeds: '%s'", seeds)));
         return this;
     }
@@ -53,7 +55,7 @@ public class GameOfLife {
      * @return this
      */
     public GameOfLife seedGame(String[] seeds) {
-        this.boundary =  getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
+        this.boundary = getCellFromString(getBoundaryFromHeader(seeds[0]), Boundary::new);
         setLiveCells(seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length)));
         return this;
     }
@@ -79,6 +81,11 @@ public class GameOfLife {
         return boundary;
     }
 
+    private GameOfLife setBoundary(Boundary boundary) {
+        this.boundary = boundary;
+        return this;
+    }
+
     private boolean isLiveCell(char c) {
         return c == LIVE_CELL;
     }
@@ -94,12 +101,14 @@ public class GameOfLife {
                 .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
-    private Map<String, Cell> setLiveCells(Map<String, Cell> liveCells) {
-        return this.liveCells = liveCells;
+    private GameOfLife setLiveCells(Map<String, Cell> liveCells) {
+        this.liveCells = liveCells;
+        return this;
     }
 
     public Map<String, Cell> evolve() {
-        return setLiveCells(tick());
+        setLiveCells(tick());
+        return liveCells;
     }
 
     private Map<String, Cell> tick() {
