@@ -21,8 +21,12 @@ public class GameOfLife {
         return this;
     }
 
-    public boolean isLiveCell(double x, double y) {
-        return liveCells.get(Cell.getString((int)x, (int)y)) != null;
+    public boolean isLiveCell(int x, int y) {
+        return liveCells.get(Cell.getString(x, y)) != null;
+    }
+
+    private boolean isLiveCell(Cell cell) {
+        return isLiveCell(cell.x, cell.y);
     }
 
     public GameOfLife tick() {
@@ -56,8 +60,8 @@ public class GameOfLife {
     }
 
     private long getNumberOfLiveNeighbours(Cell cell) {
-        return getLiveCells().stream()
-                .filter(cell::isNeighbour)
+        return cell.getNeighbours()
+                .filter(this::isLiveCell)
                 .count();
     }
 
@@ -70,7 +74,7 @@ public class GameOfLife {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.getX(), cell.getY());
+        return !isLiveCell(cell);
     }
 
 }

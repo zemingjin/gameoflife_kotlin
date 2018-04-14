@@ -24,10 +24,6 @@ public class Cell extends Point implements Comparable<Cell> {
                 .filter(this::isNotThis);
     }
 
-    boolean isNeighbour(Cell that) {
-        return isNotThis(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
-    }
-
     private boolean isNotThis(Cell that) {
         return !equals(that);
     }
