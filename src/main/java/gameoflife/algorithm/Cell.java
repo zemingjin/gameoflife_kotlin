@@ -1,40 +1,31 @@
 package gameoflife.algorithm;
 
-import java.util.Optional;
+import java.awt.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Cell implements Comparable<Cell> {
-    private final int x, y;
-    private String string;
+public class Cell extends Point implements Comparable<Cell> {
+    private final String string;
 
-    Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
+    public Cell(int x, int y) {
+        super(x, y);
+        string = getString(x, y);
     }
 
     Stream<Cell> getNeighbours() {
-        return IntStream.rangeClosed(getY() - 1, getY() + 1)
+        return IntStream.rangeClosed(y - 1, y + 1)
                 .mapToObj(this::getNeighboursByRow)
                 .flatMap(s -> s);
     }
 
     private Stream<Cell> getNeighboursByRow(int y) {
-        return IntStream.rangeClosed(getX() - 1, getX() + 1)
+        return IntStream.rangeClosed(x - 1, x + 1)
                 .mapToObj(x -> new Cell(x, y))
                 .filter(this::isNotThis);
     }
 
     boolean isNeighbour(Cell that) {
-        return !equals(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
+        return isNotThis(that) && Math.abs(x - that.x) <= 1 && Math.abs(y - that.y) <= 1;
     }
 
     private boolean isNotThis(Cell that) {
@@ -42,32 +33,18 @@ public class Cell implements Comparable<Cell> {
     }
 
     @Override
-    public boolean equals(Object obj) {
-        return Optional.ofNullable(obj)
-                .filter(Cell.class::isInstance)
-                .map(that -> (Cell)that)
-                .filter(that -> getX() == that.getX() && getY() == that.getY())
-                .isPresent();
-    }
-
-    @Override
     public int hashCode() {
-        return getString().hashCode();
+        return string.hashCode();
     }
 
     @Override
     public String toString() {
-        return getString();
+        return string;
     }
 
     @Override
     public int compareTo(Cell that) {
         return toString().compareTo(that.toString());
-    }
-
-    private String getString() {
-        return Optional.ofNullable(string)
-               .orElseGet(() -> string = getString(x, y));
     }
 
     static String getString(int x, int y) {

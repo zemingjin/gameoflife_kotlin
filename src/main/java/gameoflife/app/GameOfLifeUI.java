@@ -3,6 +3,7 @@ package gameoflife.app;
 import gameoflife.algorithm.Boundary;
 import gameoflife.algorithm.GameOfLife;
 import gameoflife.helper.IOHelper;
+import gameoflife.helper.SeedHelper;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,7 +26,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private static final String OPT_WAIT = "-w";
     private static final Logger LOG = Logger.getLogger(GameOfLifeUI.class.getName());
 
-    private final GameOfLife gameOfLife = new GameOfLife();
+    private final SeedHelper seedHelper = new SeedHelper();
+    private GameOfLife gameOfLife;
     private final JFrame window = new JFrame();
     private int cellSize = MAX_CELL_SIZE;
     private boolean continueFlag = true;
@@ -45,11 +47,16 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private GameOfLifeUI setup(String[] params) {
         path = params[0];
-        gameOfLife.seedGame(IOHelper.loadSeeds(path));
+        gameOfLife = buildGameOfLife(IOHelper.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
         boundary = gameOfLife.getBoundary();
         return this;
+    }
+
+    private GameOfLife buildGameOfLife(String[] seeds) {
+        return new GameOfLife(seedHelper.seedToMap(seeds))
+                .setBoundary(seedHelper.getBoundaryFromHeader(seeds));
     }
 
     private int getWaitTime(String[] params) {
@@ -122,12 +129,12 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                         MIN_CELL_SIZE);
     }
 
-    private int calculateCellSize(int screenSize, int numberOfCells) {
-        return screenSize * 3 / 4 / numberOfCells;
+    private int calculateCellSize(int screenSize, double numberOfCells) {
+        return (int)(screenSize * 3 / 4 / numberOfCells);
     }
 
-    private int calculatePanelSize(int position) {
-        return position * cellSize;
+    private int calculatePanelSize(double position) {
+        return (int)(position * cellSize);
     }
 
     private int getHorizontalPosition(int panelWidth) {
@@ -159,21 +166,22 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void evolve() {
-        gameOfLife.evolve();
+        gameOfLife = gameOfLife.tick();
         evolveToggle++;
-        window.setTitle(String.format("%s - #%d", path, iteration++));
+        window.setTitle(String.format("%s - #%d", path, iteration));
+        iteration++;
     }
 
     @Override
     public void paint(Graphics graphics) {
-        IntStream.range(0, boundary.getY()).forEach(y -> {
+        IntStream.range(0, (int)boundary.getY()).forEach(y -> {
             paintRow(fillCell.apply(graphics, y));
             paintRow(drawBorder.apply(graphics, y));
         });
     }
 
     private void paintRow(Consumer<Integer> actor) {
-        IntStream.range(0, boundary.getX())
+        IntStream.range(0, (int)boundary.getX())
                 .forEach(actor::accept);
     }
 
