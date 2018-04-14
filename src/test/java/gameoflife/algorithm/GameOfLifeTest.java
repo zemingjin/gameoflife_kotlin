@@ -45,7 +45,7 @@ public class GameOfLifeTest {
     }
 
     private List<Cell> getNeighbouringDeadCellsList(GameOfLife gameOfLife) {
-        return gameOfLife.getNeighbouringDeadCells().collect(Collectors.toList());
+        return gameOfLife.getInactiveNeighbours().collect(Collectors.toList());
     }
 
     @Test

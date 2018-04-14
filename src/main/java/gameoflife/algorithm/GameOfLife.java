@@ -51,21 +51,21 @@ public class GameOfLife {
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = getNumberOfLiveNeighbours(cell);
+        final long numberOfNeighbours = countActiveNeighbours(cell);
         return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 
     private Stream<Cell> getReproductionCells() {
-        return getNeighbouringDeadCells().filter(cell -> getNumberOfLiveNeighbours(cell) == 3);
+        return getInactiveNeighbours().filter(cell -> countActiveNeighbours(cell) == 3);
     }
 
-    private long getNumberOfLiveNeighbours(Cell cell) {
+    private long countActiveNeighbours(Cell cell) {
         return cell.getNeighbours()
                 .filter(this::isLiveCell)
                 .count();
     }
 
-    Stream<Cell> getNeighbouringDeadCells() {
+    Stream<Cell> getInactiveNeighbours() {
         return getLiveCells().stream()
                 .flatMap(Cell::getNeighbours)
                 .filter(boundary::isInBound)
