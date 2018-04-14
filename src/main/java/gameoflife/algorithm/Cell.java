@@ -1,6 +1,6 @@
 package gameoflife.algorithm;
 
-import java.awt.*;
+import java.awt.Point;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
