@@ -9,8 +9,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.logging.Level;
@@ -172,43 +172,42 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         iteration++;
     }
 
-    @Override
-    public void paint(Graphics graphics) {
-        IntStream.range(0, (int)boundary.getY()).forEach(y -> {
-            paintRow(fillCell.apply(graphics, y));
-            paintRow(drawBorder.apply(graphics, y));
-        });
+    private int getCellPosition(int index) {
+        return index * cellSize;
     }
-
-    private void paintRow(Consumer<Integer> actor) {
-        IntStream.range(0, (int)boundary.getX())
-                .forEach(actor::accept);
+    private int getFillPosition(int index) {
+        return getCellPosition(index) + 1;
     }
-
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> fillCell = (graphics, y) -> x -> {
-        graphics.setColor(getColor(x, y));
-        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
-    };
-
-    private final BiFunction<Graphics, Integer, Consumer<Integer>> drawBorder = (graphics, y) -> x -> {
-        graphics.setColor(getForeground());
-        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
-    };
+    private int getFillSize() {
+        return cellSize - 2;
+    }
 
     private Color getColor(int x, int y) {
         return gameOfLife.isLiveCell(x, y) ? getForeground() : getBackground();
     }
 
-    private int getFillPosition(int index) {
-        return getCellPosition(index) + 1;
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> fillCell = graphics -> y -> x -> {
+        graphics.setColor(getColor(x, y));
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), getFillSize(), getFillSize());
+    };
+
+    private final Function<Graphics, Function<Integer, Consumer<Integer>>> drawBorder = graphics -> y -> x -> {
+        graphics.setColor(getForeground());
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize);
+    };
+
+    private final List<Function<Graphics, Function<Integer, Consumer<Integer>>>> LAMBDAS = Arrays.asList(fillCell, drawBorder);
+
+    private void paintRow(Consumer<Integer> actor) {
+        IntStream.range(0, boundary.x).forEach(actor::accept);
+    }
+    private void paintRows(Function<Integer, Consumer<Integer>> paint) {
+        IntStream.range(0, boundary.y).forEach(y -> paintRow(paint.apply(y)));
     }
 
-    private int getFillSize() {
-        return cellSize - 2;
-    }
-
-    private int getCellPosition(int index) {
-        return index * cellSize;
+    @Override
+    public void paint(Graphics graphics) {
+        LAMBDAS.forEach(lambda -> paintRows(lambda.apply(graphics)));
     }
 
     private void waitAWhile() {
