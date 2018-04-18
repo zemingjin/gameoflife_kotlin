@@ -5,7 +5,7 @@ import gameoflife.helper.IOHelper;
 import java.util.logging.Logger;
 
 class GameOfLifeUITest extends GameOfLifeUI {
-    private static final int ITERATIONS = 100;
+    private static final int ITERATIONS = 200;
     private static final Logger LOG = Logger.getLogger(GameOfLifeUITest.class.getName());
 
     private int iterations = ITERATIONS;
