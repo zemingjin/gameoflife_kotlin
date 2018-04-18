@@ -38,7 +38,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private int iteration;
     private int waitTime;
 
-    GameOfLifeUI(String[] params) {
+    public GameOfLifeUI(String[] params) {
         Optional.of(params)
                 .filter(p -> p.length > 0)
                 .map(this::setup)
@@ -73,6 +73,10 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     public boolean isContinueFlag() {
         return continueFlag;
+    }
+
+    public GameOfLife getGameOfLife() {
+        return gameOfLife;
     }
 
     void run() {
