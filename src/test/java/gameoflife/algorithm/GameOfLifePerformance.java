@@ -4,16 +4,28 @@ import gameoflife.app.GameOfLifeUI;
 
 public class GameOfLifePerformance {
     private static final int ITERATIONS = 500;
+import java.util.logging.Logger;
 
-    public static void main(String[] params) {
+public final class GameOfLifePerformance {
+    private static final int ITERATIONS = 500;
+    private static final Logger LOG = Logger.getLogger(GameOfLifePerformance.class.getName());
+
+    private GameOfLifePerformance() {
+    }
+
+    private void run(String[] params) {
         GameOfLife gameOfLife = new GameOfLifeUI(params).setWaitTime(0).getGameOfLife();
-        long time = System.currentTimeMillis();
+        final long time = System.currentTimeMillis();
 
-        System.out.println("Started...");
+        LOG.info("Started...");
         for (int i = 0; i < ITERATIONS; i++) {
             gameOfLife = gameOfLife.tick();
         }
-        System.out.println(format(System.currentTimeMillis() - time));
+        LOG.info(format(System.currentTimeMillis() - time));
+    }
+
+    public static void main(String[] params) {
+        new GameOfLifePerformance().run(params);
     }
 
     private static String format(long time) {

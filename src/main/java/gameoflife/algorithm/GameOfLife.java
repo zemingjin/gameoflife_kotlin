@@ -25,10 +25,6 @@ public class GameOfLife {
         return liveCells.get(Cell.getString(x, y)) != null;
     }
 
-    private boolean isLiveCell(Cell cell) {
-        return isLiveCell(cell.x, cell.y);
-    }
-
     public GameOfLife tick() {
         return new GameOfLife(getNewLiveCellsMap())
                 .setBoundary(getBoundary());
@@ -61,20 +57,19 @@ public class GameOfLife {
 
     private long countActiveNeighbours(Cell cell) {
         return cell.getNeighbours()
-                .filter(this::isLiveCell)
+                .filter(c -> isLiveCell(c.x, c.y))
                 .count();
     }
 
     Stream<Cell> getInactiveNeighbours() {
         return getLiveCells().stream()
                 .flatMap(Cell::getNeighbours)
-                .filter(boundary::isInBound)
                 .filter(this::isDeadCell)
                 .distinct();
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell);
+        return !isLiveCell(cell.x, cell.y);
     }
 
 }
