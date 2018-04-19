@@ -39,8 +39,8 @@ public class GameOfLifeTest {
     public void testGetDeadCells() {
         final GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2", "3|3");
 
-        assertEquals(6, getNeighbouringDeadCellsList(gameOfLife).size());
-        assertEquals("[0|0, 2|0, 0|1, 2|1, 0|2, 2|2]",
+        assertEquals(12, getNeighbouringDeadCellsList(gameOfLife).size());
+        assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
                      getNeighbouringDeadCellsList(gameOfLife).toString());
     }
 
@@ -69,9 +69,13 @@ public class GameOfLifeTest {
         GameOfLife gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3", "4|4");
 
         gameOfLife = gameOfLife.tick();
-        assertEquals("[2|1, 2|3, 3|1, 3|3]", sort(gameOfLife.getLiveCells()).toString());
+        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(gameOfLife.getLiveCells()).toString());
         gameOfLife = gameOfLife.tick();
-        assertEquals("[]", gameOfLife.getLiveCells().toString());
+        assertEquals("[3|1, 3|3, 4|2]", gameOfLife.getLiveCells().toString());
+        gameOfLife = gameOfLife.tick();
+        assertEquals("[3|2, 4|2]", gameOfLife.getLiveCells().toString());
+        gameOfLife = gameOfLife.tick();
+        assertEquals("", gameOfLife.getLiveCells().toString());
     }
 
     @Test
