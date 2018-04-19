@@ -2,8 +2,6 @@ package gameoflife.algorithm;
 
 import gameoflife.app.GameOfLifeUI;
 
-public class GameOfLifePerformance {
-    private static final int ITERATIONS = 500;
 import java.util.logging.Logger;
 
 public final class GameOfLifePerformance {
