@@ -3,10 +3,10 @@ package gameoflife.algorithm;
 import gameoflife.app.GameOfLifeUI;
 
 public class GameOfLifePerformance {
-    private static final int ITERATIONS = 200;
+    private static final int ITERATIONS = 500;
 
     public static void main(String[] params) {
-        GameOfLife gameOfLife = new GameOfLifeUI(params).getGameOfLife();
+        GameOfLife gameOfLife = new GameOfLifeUI(params).setWaitTime(0).getGameOfLife();
         long time = System.currentTimeMillis();
 
         System.out.println("Started...");

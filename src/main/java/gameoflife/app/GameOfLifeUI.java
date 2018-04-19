@@ -67,6 +67,11 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
                 .orElse(WAIT_TIME);
     }
 
+    public GameOfLifeUI setWaitTime(int waitTime) {
+        this.waitTime = waitTime;
+        return this;
+    }
+
     private boolean isAutomaton(String[] params) {
         return !Arrays.asList(params).contains(OPT_STEP);
     }
@@ -215,12 +220,14 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     }
 
     private void waitAWhile() {
-        try {
-            synchronized (this) {
-                wait(waitTime);
+        if (waitTime > 0) {
+            try {
+                synchronized (this) {
+                    wait(waitTime);
+                }
+            } catch (InterruptedException ex) {
+                LOG.log(Level.SEVERE, ex.getMessage(), ex);
             }
-        } catch (InterruptedException ex) {
-            LOG.log(Level.SEVERE, ex.getMessage(), ex);
         }
     }
 
