@@ -5,8 +5,16 @@ import gameoflife.algorithm.GameOfLife;
 import gameoflife.helper.IOHelper;
 import gameoflife.helper.SeedHelper;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import javax.swing.WindowConstants;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.KeyEventPostProcessor;
+import java.awt.KeyboardFocusManager;
+import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
