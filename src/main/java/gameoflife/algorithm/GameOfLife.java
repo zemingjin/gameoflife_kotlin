@@ -47,7 +47,7 @@ public class GameOfLife {
     }
 
     private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = countActiveNeighbours(cell);
+        final var numberOfNeighbours = countActiveNeighbours(cell);
         return 2 == numberOfNeighbours || numberOfNeighbours == 3;
     }
 

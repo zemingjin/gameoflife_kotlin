@@ -12,11 +12,11 @@ public final class GameOfLifePerformance {
     }
 
     private void run(String[] params) {
-        GameOfLife gameOfLife = new GameOfLifeUI(params).setWaitTime(0).getGameOfLife();
-        final long time = System.currentTimeMillis();
+        var gameOfLife = new GameOfLifeUI(params).setWaitTime(0).getGameOfLife();
+        final var time = System.currentTimeMillis();
 
         LOG.info("Started...");
-        for (int i = 0; i < ITERATIONS; i++) {
+        for (var i = 0; i < ITERATIONS; i++) {
             gameOfLife = gameOfLife.tick();
         }
         LOG.info(format(System.currentTimeMillis() - time));

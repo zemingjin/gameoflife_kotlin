@@ -35,7 +35,7 @@ public class SeedHelper {
     }
 
     private <T extends Cell> T getCellFromString(String values, BiFunction<Integer, Integer, T> construct) {
-        final String[] indices = values.split(INDICES_DELIMITER);
+        final var indices = values.split(INDICES_DELIMITER);
         return construct.apply(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
     }
 
