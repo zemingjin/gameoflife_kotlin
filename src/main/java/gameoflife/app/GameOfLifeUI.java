@@ -116,8 +116,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(calculateCellSize());
 
-        final var width = calculatePanelSize(boundary.getX());
-        final var height = calculatePanelSize(boundary.getY());
+        final int width = calculatePanelSize(boundary.getX());
+        final int height = calculatePanelSize(boundary.getY());
 
         setSize(width, height);
         setFocusable(true);
@@ -237,12 +237,12 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     @Override
     public boolean postProcessKeyEvent(KeyEvent e) {
-        var result = false;
+        boolean result = false;
         if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
             continueFlag = false;
         } else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
             automaton = e.isControlDown();
-            evolveToggle = (evolveToggle < 2) ? evolveToggle + 1 : 0;
+            evolveToggle = evolveToggle < 2 ? evolveToggle + 1 : 0;
             e.consume();
             result = true;
         }
