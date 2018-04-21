@@ -3,6 +3,7 @@ package gameoflife.algorithm;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -45,16 +46,15 @@ public class GameOfLife {
     }
 
     private Stream<Cell> getNextGenerationCells() {
-        return getLiveCells().stream().filter(this::isNextGenerationCell);
-    }
-
-    private boolean isNextGenerationCell(Cell cell) {
-        final long numberOfNeighbours = countActiveNeighbours(cell);
-        return 2 == numberOfNeighbours || numberOfNeighbours == 3;
+        return filteredCells(getLiveCells().stream(), n -> 2 == n || n == 3);
     }
 
     private Stream<Cell> getReproductionCells() {
-        return getInactiveNeighbours().filter(cell -> countActiveNeighbours(cell) == 3);
+        return filteredCells(getInactiveNeighbours(), n -> n == 3);
+    }
+
+    private Stream<Cell> filteredCells(Stream<Cell> cells, Predicate<Long> condition) {
+        return cells.filter(cell -> condition.test(countActiveNeighbours(cell)));
     }
 
     private long countActiveNeighbours(Cell cell) {
