@@ -18,18 +18,18 @@ public class GameOfLifeTest {
         new GameOfLife(new HashMap<>()).getLiveCells();
     }
 
-    private GameOfLife mockGameOfLife(String seed, String boundary) {
-        return new GameOfLife(seedHelper.seedToMap(seed)).setBoundary(seedHelper.getBoundary(boundary));
+    private GameOfLife mockGameOfLife(String seed) {
+        return new GameOfLife(seedHelper.seedToMap(seed));
     }
 
     @Test(expected = RuntimeException.class)
     public void testSeedGameWithEmptyString() {
-        mockGameOfLife("", "3|4");
+        mockGameOfLife("");
     }
 
     @Test
     public void testSeed() {
-        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 1|3", "3|4");
+        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 1|3");
 
         assertEquals(3, gameOfLife.getLiveCells().size());
         assertEquals("[1|1, 1|2, 1|3]", gameOfLife.getLiveCells().toString());
@@ -37,7 +37,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testGetDeadCells() {
-        final GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2", "3|3");
+        final GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2");
 
         assertEquals(12, getNeighbouringDeadCellsList(gameOfLife).size());
         assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
@@ -50,7 +50,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testBlinker() {
-        GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2", "3|3").tick();
+        GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2").tick();
 
         assertEquals("[0|1, 1|1, 2|1]", sort(gameOfLife.getLiveCells()).toString());
         gameOfLife = gameOfLife.tick();
@@ -59,14 +59,14 @@ public class GameOfLifeTest {
 
     @Test
     public void testBloker() {
-        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 2|2","3|3");
+        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 2|2");
 
         assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.tick().getLiveCells()).toString());
     }
 
     @Test(expected = RuntimeException.class)
     public void testToad() {
-        GameOfLife gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3", "4|4");
+        GameOfLife gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3");
 
         gameOfLife = gameOfLife.tick();
         assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(gameOfLife.getLiveCells()).toString());
@@ -80,7 +80,7 @@ public class GameOfLifeTest {
 
     @Test
     public void testBeacon() {
-        GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4", "5|5").tick();
+        GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").tick();
 
         assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.getLiveCells()).toString());
         gameOfLife = gameOfLife.tick();
@@ -90,14 +90,8 @@ public class GameOfLifeTest {
     }
 
     @Test
-    public void testGetMaxIndex() {
-        assertEquals(new Cell(5, 5),
-                     mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 8|8", "5|5").getBoundary());
-    }
-
-    @Test
     public void testIsLiveCell() {
-        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 5|5", "5|5");
+        final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 5|5");
 
         assertTrue(gameOfLife.isLiveCell(1, 1));
         assertTrue(gameOfLife.isLiveCell(4, 3));

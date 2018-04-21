@@ -58,13 +58,12 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
         gameOfLife = buildGameOfLife(IOHelper.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
-        boundary = gameOfLife.getBoundary();
         return this;
     }
 
     private GameOfLife buildGameOfLife(String[] seeds) {
-        return new GameOfLife(seedHelper.seedToMap(seeds))
-                .setBoundary(seedHelper.getBoundaryFromHeader(seeds));
+        boundary = seedHelper.getBoundaryFromHeader(seeds);
+        return new GameOfLife(seedHelper.seedToMap(seeds));
     }
 
     private int getWaitTime(String[] params) {
