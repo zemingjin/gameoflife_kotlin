@@ -53,8 +53,8 @@ public class GameOfLife {
         return filteredCells(getInactiveNeighbours(), n -> n == 3);
     }
 
-    private Stream<Cell> filteredCells(Stream<Cell> cells, Predicate<Long> condition) {
-        return cells.filter(cell -> condition.test(countActiveNeighbours(cell)));
+    private Stream<Cell> filteredCells(Stream<Cell> cells, Predicate<Long> isActiveCell) {
+        return cells.filter(cell -> isActiveCell.test(countActiveNeighbours(cell)));
     }
 
     private long countActiveNeighbours(Cell cell) {
@@ -73,5 +73,4 @@ public class GameOfLife {
     private boolean isDeadCell(Cell cell) {
         return !isLiveCell(cell.x, cell.y);
     }
-
 }
