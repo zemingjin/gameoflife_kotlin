@@ -15,7 +15,11 @@ public class GameOfLife {
     }
 
     public boolean isLiveCell(int x, int y) {
-        return liveCells.get(Cell.getString(x, y)) != null;
+        return isLiveCell(Cell.getString(x, y));
+    }
+
+    private boolean isLiveCell(String key) {
+        return liveCells.get(key) != null;
     }
 
     Collection<Cell> getLiveCells() {
@@ -44,7 +48,7 @@ public class GameOfLife {
 
     private long countActiveNeighbours(Cell cell) {
         return cell.getNeighbours()
-                .filter(c -> isLiveCell(c.x, c.y))
+                .filter(c -> isLiveCell(c.toString()))
                 .count();
     }
 
@@ -60,6 +64,6 @@ public class GameOfLife {
     }
 
     private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.x, cell.y);
+        return !isLiveCell(cell.toString());
     }
 }
