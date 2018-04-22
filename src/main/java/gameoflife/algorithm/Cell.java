@@ -1,14 +1,15 @@
 package gameoflife.algorithm;
 
-import java.awt.Point;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class Cell extends Point implements Comparable<Cell> {
+public class Cell implements Comparable<Cell> {
     private final String string;
+    public final int x, y;
 
     public Cell(int x, int y) {
-        super(x, y);
+        this.x = x;
+        this.y = y;
         string = getString(x, y);
     }
 
@@ -34,6 +35,17 @@ public class Cell extends Point implements Comparable<Cell> {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (obj == this) {
+            return true;
+        } else if (obj instanceof Cell) {
+            Cell that = (Cell)obj;
+            return x == that.x && y == that.y;
+        }
+        return false;
+    }
+
+    @Override
     public String toString() {
         return string;
     }
@@ -44,6 +56,6 @@ public class Cell extends Point implements Comparable<Cell> {
     }
 
     static String getString(int x, int y) {
-        return String.format("%d|%d", x, y);
+        return x + "|" + y;
     }
 }
