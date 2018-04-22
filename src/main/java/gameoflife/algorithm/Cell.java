@@ -10,7 +10,7 @@ public class Cell implements Comparable<Cell> {
     public Cell(int x, int y) {
         this.x = x;
         this.y = y;
-        string = getString(x, y);
+        string = toString(x, y);
     }
 
     Stream<Cell> getNeighbours() {
@@ -55,7 +55,7 @@ public class Cell implements Comparable<Cell> {
         return toString().compareTo(that.toString());
     }
 
-    static String getString(int x, int y) {
+    static String toString(int x, int y) {
         return x + "|" + y;
     }
 }
