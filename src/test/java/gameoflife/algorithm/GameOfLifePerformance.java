@@ -2,6 +2,7 @@ package gameoflife.algorithm;
 
 import gameoflife.app.GameOfLifeUI;
 
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public final class GameOfLifePerformance {
@@ -12,7 +13,8 @@ public final class GameOfLifePerformance {
     }
 
     private void run(String[] params) {
-        GameOfLife gameOfLife = new GameOfLifeUI(params).setWaitTime(0).getGameOfLife();
+
+        GameOfLife gameOfLife = new GameOfLifeUI(checkPath(params)).setWaitTime(0).getGameOfLife();
         final long time = System.currentTimeMillis();
 
         LOG.info("Started...");
@@ -20,6 +22,12 @@ public final class GameOfLifePerformance {
             gameOfLife = gameOfLife.tick();
         }
         LOG.info(format(System.currentTimeMillis() - time));
+    }
+
+    private String[] checkPath(String[] params) {
+        return Optional.ofNullable(params)
+                .filter(p -> p.length > 0)
+                .orElseGet(() -> new String[]{ "src/main/resources/sidecar_gun.seed" });
     }
 
     public static void main(String[] params) {

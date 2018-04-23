@@ -1,4 +1,6 @@
-package gameoflife.algorithm;
+package gameoflife.app;
+
+import gameoflife.algorithm.Cell;
 
 public class Boundary extends Cell {
     public Boundary(int x, int y) {

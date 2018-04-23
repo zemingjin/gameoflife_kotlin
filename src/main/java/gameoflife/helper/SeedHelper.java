@@ -1,6 +1,6 @@
 package gameoflife.helper;
 
-import gameoflife.algorithm.Boundary;
+import gameoflife.app.Boundary;
 import gameoflife.algorithm.Cell;
 
 import java.util.Arrays;

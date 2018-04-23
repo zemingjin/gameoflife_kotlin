@@ -14,11 +14,11 @@ public class GameOfLife {
         this.liveCells = liveCells;
     }
 
-    public boolean isLiveCell(int x, int y) {
-        return isLiveCell(Cell.toString(x, y));
+    public boolean isActive(int x, int y) {
+        return isActive(Cell.toString(x, y));
     }
 
-    private boolean isLiveCell(String key) {
+    private boolean isActive(String key) {
         return liveCells.get(key) != null;
     }
 
@@ -48,22 +48,18 @@ public class GameOfLife {
 
     private long countActiveNeighbours(Cell cell) {
         return cell.getNeighbours()
-                .filter(c -> isLiveCell(c.toString()))
+                .filter(c -> isActive(c.toString()))
                 .count();
     }
 
     Stream<Cell> getInactiveNeighbours() {
         return getLiveCells().stream()
-                .flatMap(this::getInactiveNeighbours)
+                .flatMap(Cell::getNeighbours)
+                .filter(this::isNotActive)
                 .distinct();
     }
 
-    private Stream<Cell> getInactiveNeighbours(Cell cell) {
-        return cell.getNeighbours()
-                .filter(this::isDeadCell);
-    }
-
-    private boolean isDeadCell(Cell cell) {
-        return !isLiveCell(cell.toString());
+    private boolean isNotActive(Cell cell) {
+        return !isActive(cell.toString());
     }
 }

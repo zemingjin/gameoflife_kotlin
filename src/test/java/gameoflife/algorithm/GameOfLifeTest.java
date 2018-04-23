@@ -93,10 +93,10 @@ public class GameOfLifeTest {
     public void testIsLiveCell() {
         final GameOfLife gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4, 5|5");
 
-        assertTrue(gameOfLife.isLiveCell(1, 1));
-        assertTrue(gameOfLife.isLiveCell(4, 3));
-        assertFalse(gameOfLife.isLiveCell(1, 4));
-//        assertFalse(gameOfLife.isLiveCell(5, 5));
+        assertTrue(gameOfLife.isActive(1, 1));
+        assertTrue(gameOfLife.isActive(4, 3));
+        assertFalse(gameOfLife.isActive(1, 4));
+//        assertFalse(gameOfLife.isActive(5, 5));
     }
 
     private List<Cell> sort(Collection<Cell> list) {
