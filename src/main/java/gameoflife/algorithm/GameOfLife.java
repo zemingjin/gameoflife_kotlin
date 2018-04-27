@@ -30,8 +30,12 @@ public class GameOfLife {
     }
 
     public GameOfLife tick() {
-        return new GameOfLife(Stream.concat(getNextGenerationCells(), getReproductionCells())
-                                    .collect(Collectors.toMap(Cell::toString, cell -> cell)));
+        return new GameOfLife(getNextLiveCellsMap());
+    }
+
+    private Map<String, Cell> getNextLiveCellsMap() {
+        return Stream.concat(getNextGenerationCells(), getReproductionCells())
+                     .collect(Collectors.toMap(Cell::toString, cell -> cell));
     }
 
     private Stream<Cell> getNextGenerationCells() {
