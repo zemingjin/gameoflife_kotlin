@@ -24,14 +24,14 @@ public class GameOfLife {
 
     Collection<Cell> getLiveCells() {
         return Optional.of(liveCells)
-                .filter(cells -> !cells.isEmpty())
-                .map(Map::values)
-                .orElseThrow(() -> new RuntimeException("No more living cells"));
+                       .filter(cells -> !cells.isEmpty())
+                       .map(Map::values)
+                       .orElseThrow(() -> new RuntimeException("No more living cells"));
     }
 
     public GameOfLife tick() {
         return new GameOfLife(Stream.concat(getNextGenerationCells(), getReproductionCells())
-                                      .collect(Collectors.toMap(Cell::toString, cell -> cell)));
+                                    .collect(Collectors.toMap(Cell::toString, cell -> cell)));
     }
 
     private Stream<Cell> getNextGenerationCells() {
@@ -48,15 +48,15 @@ public class GameOfLife {
 
     private long countActiveNeighbours(Cell cell) {
         return cell.getNeighbours()
-                .filter(c -> isActive(c.toString()))
-                .count();
+                   .filter(c -> isActive(c.toString()))
+                   .count();
     }
 
     Stream<Cell> getInactiveNeighbours() {
         return getLiveCells().stream()
-                .flatMap(Cell::getNeighbours)
-                .filter(this::isNotActive)
-                .distinct();
+                             .flatMap(Cell::getNeighbours)
+                             .filter(this::isNotActive)
+                             .distinct();
     }
 
     private boolean isNotActive(Cell cell) {
