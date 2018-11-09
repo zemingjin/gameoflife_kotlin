@@ -59,8 +59,8 @@ public class GameOfLife {
     Stream<Cell> getInactiveNeighbours() {
         return getLiveCells().stream()
                              .flatMap(Cell::getNeighbours)
-                             .filter(this::isNotActive)
-                             .distinct();
+                             .distinct()
+                             .filter(this::isNotActive);
     }
 
     private boolean isNotActive(Cell cell) {

@@ -105,4 +105,14 @@ public class GameOfLifeTest {
                 .collect(Collectors.toList());
     }
 
+    @Test
+    public void testGetInactiveNeibours() {
+        final GameOfLife gameOfLife = mockGameOfLife("1|0, 1|1, 1|2");
+        final List<Cell> cells = gameOfLife.getInactiveNeighbours().collect(Collectors.toList());
+
+        assertEquals(12, cells.size());
+        assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
+                     cells.toString());
+    }
+
 }
