@@ -13,6 +13,6 @@ public class IOHelperTest {
 
     @Test
     public void testLoadSeeds() {
-        assertEquals(BEACON, Arrays.toString(IOHelper.loadSeeds(BEACON_FILE)));
+        assertEquals(BEACON, Arrays.toString(IOHelperKt.loadSeeds(BEACON_FILE)));
     }
 }

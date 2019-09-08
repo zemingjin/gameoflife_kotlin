@@ -1,7 +1,7 @@
 package gameoflife.app;
 
 import gameoflife.algorithm.GameOfLife;
-import gameoflife.helper.IOHelper;
+import gameoflife.helper.IOHelperKt;
 import gameoflife.helper.SeedHelper;
 
 import javax.swing.JComponent;
@@ -54,7 +54,7 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private GameOfLifeUI setup(String[] params) {
         path = params[0];
-        gameOfLife = buildGameOfLife(IOHelper.loadSeeds(path));
+        gameOfLife = buildGameOfLife(IOHelperKt.loadSeeds(path));
         automaton = isAutomaton(params);
         waitTime = getWaitTime(params);
         return this;

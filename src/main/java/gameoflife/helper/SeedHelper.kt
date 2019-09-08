@@ -1,76 +1,69 @@
-package gameoflife.helper;
+package gameoflife.helper
 
-import gameoflife.app.Boundary;
-import gameoflife.algorithm.Cell;
+import gameoflife.app.Boundary
+import gameoflife.algorithm.Cell
 
-import java.util.Arrays;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.Optional
+import java.util.function.BiFunction
+import java.util.stream.IntStream
+import java.util.stream.Stream
+import kotlin.streams.toList
 
-public class SeedHelper {
-    private static final String INDICES_DELIMITER = "\\|";
-    private static final String CELL_DELIMITER = ", ";
-    private static final char LIVE_CELL = 'O';
+class SeedHelper {
 
     /**
      * This method is used only by tests
      * @param seeds the given seeds in the format of "1|1, 1|2, 1|3"
      * @return self
      */
-    public Map<String, Cell> seedToMap(String seeds) {
-        return Optional.ofNullable(seeds)
-                .filter(input -> !input.isEmpty())
-                .map(this::seedLiveCells)
-                .orElseThrow(() -> new RuntimeException(String.format("Invalid seeds: '%s'", seeds)));
-    }
+    fun seedToMap(seeds: String) =
+            Optional.ofNullable(seeds)
+                .filter { it.isNotEmpty() }
+                .map { seedLiveCells(it) }
+                .orElseThrow { RuntimeException(String.format("Invalid seeds: '%s'", seeds)) }
 
-    private Map<String, Cell> seedLiveCells(String liveCells) {
-        return Stream.of(liveCells.split(CELL_DELIMITER))
-                .map(seed -> getCellFromString(seed, Cell::new))
-                .collect(Collectors.toMap(Cell::toString, cell -> cell));
-    }
+    private fun seedLiveCells(liveCells: String) =
+            Stream.of(*liveCells.split(CELL_DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
+                .map { getCellFromString(it, BiFunction { x, y -> Cell(x, y) }) }
+                .map { (it.toString() to it) }
+                .toList()
+                .toMap()
 
-    private <T extends Cell> T getCellFromString(String values, BiFunction<Integer, Integer, T> construct) {
-        final String[] indices = values.split(INDICES_DELIMITER);
-        return construct.apply(Integer.parseInt(indices[0].trim()), Integer.parseInt(indices[1].trim()));
+    private fun <T : Cell> getCellFromString(values: String, construct: BiFunction<Int, Int, T>): T {
+        val indices = values.split(INDICES_DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        return construct.apply(Integer.parseInt(indices[0].trim { it <= ' ' }), Integer.parseInt(indices[1].trim { it <= ' ' }))
     }
 
     /**
      * @param seeds the first line contains the size info, such as "#P width|height".
-     *              the rest is in the format of ".....OO.O" where the capital 'O' indicate live cell(s).
+     * the rest is in the format of ".....OO.O" where the capital 'O' indicate live cell(s).
      * @return this
      */
-    public Map<String, Cell> seedToMap(String[] seeds) {
-        return seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length));
-    }
+    fun seedToMap(seeds: Array<String>) = seedLiveCells(seeds.copyOfRange(1, seeds.size))
 
-    private Boundary getBoundary(String seed) {
-        return getCellFromString(seed, Boundary::new);
-    }
+    private fun getBoundary(seed: String) = getCellFromString(seed, BiFunction { x, y -> Boundary(x, y) })
 
-    public Boundary getBoundaryFromHeader(String[] seed) {
-        return getBoundary(seed[0].split(" ")[1]);
-    }
+    fun getBoundaryFromHeader(seed: Array<String>) =
+            getBoundary(seed[0].split(" ".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()[1]) as Boundary
 
-    private Map<String, Cell> seedLiveCells(String[] seeds) {
-        return IntStream.range(0, seeds.length)
-                .mapToObj(y -> getLiveCellsFromRow(seeds[y], y))
-                .flatMap(stream -> stream)
-                .collect(Collectors.toMap(Cell::toString, cell -> cell));
-    }
+    private fun seedLiveCells(seeds: Array<String>) =
+            IntStream.range(0, seeds.size)
+                .mapToObj { y -> getLiveCellsFromRow(seeds[y], y) }
+                .flatMap { stream -> stream }
+                .map { (it.toString() to it) }
+                .toList()
+                .toMap()
 
-    private Stream<Cell> getLiveCellsFromRow(String line, int y) {
-        return IntStream.range(0, line.length())
-                .filter(x -> isLiveCell(line.charAt(x)))
-                .mapToObj(x -> new Cell(x, y));
-    }
+    private fun getLiveCellsFromRow(line: String, y: Int) =
+            IntStream.range(0, line.length)
+                .filter { x -> isLiveCell(line[x]) }
+                .mapToObj { x -> Cell(x, y) }
 
-    private boolean isLiveCell(char c) {
-        return c == LIVE_CELL;
-    }
+    private fun isLiveCell(c: Char) = c == LIVE_CELL
 
+    companion object {
+        private const val INDICES_DELIMITER = "\\|"
+        private const val CELL_DELIMITER = ", "
+        private const val LIVE_CELL = 'O'
+    }
 }

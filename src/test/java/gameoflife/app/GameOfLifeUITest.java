@@ -1,6 +1,6 @@
 package gameoflife.app;
 
-import gameoflife.helper.IOHelper;
+import gameoflife.helper.IOHelperKt;
 
 import java.util.logging.Logger;
 
@@ -22,6 +22,6 @@ class GameOfLifeUITest extends GameOfLifeUI {
     public static void main(String[] params) {
         final long time = System.currentTimeMillis();
         new GameOfLifeUITest(params).setWaitTime(0).run();
-        LOG.info("Total time: " + IOHelper.format(System.currentTimeMillis() - time));
+        LOG.info("Total time: " + IOHelperKt.format(System.currentTimeMillis() - time));
     }
 }
