@@ -1,4 +1,4 @@
-This project is an implementation of Conway's Game of Life with a very crude UI in Java. 
+This project is an implementation of Conway's Game of Life with a very crude UI in Kotlin. 
 
 The format of the seed file could be like the followings:
 ```
