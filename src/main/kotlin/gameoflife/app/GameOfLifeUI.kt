@@ -15,22 +15,15 @@ import java.awt.KeyEventPostProcessor
 import java.awt.KeyboardFocusManager
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
-import java.util.Arrays
 import java.util.Optional
-import java.util.logging.Logger
 import java.util.stream.IntStream
 import java.util.stream.Stream
 
 open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProcessor {
-    var isContinue: ContinueCheck = object : ContinueCheck {
+    var isContinue = object : ContinueCheck {
         override fun isContinue(): Boolean {
             return isContinueFlag
         }
-    }
-
-    fun setIsContinue(value: ContinueCheck): GameOfLifeUI {
-        isContinue = value
-        return this
     }
 
     private val seedHelper = SeedHelper()
@@ -46,13 +39,10 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
     private var iteration: Int = 0
     private var waitTime: Int = 0
 
-    private val isContinueToEvolve: Boolean
-        get() = automaton || evolveToggle == 0
+    private val isContinueToEvolve get() = automaton || evolveToggle == 0
 
-    private val screenSize: Dimension
-        get() = Toolkit.getDefaultToolkit().screenSize
-    private val fillSize: Int
-        get() = cellSize - 2
+    private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
+    private val fillSize: Int get() = cellSize - 2
 
     private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit =
             { graphics ->
@@ -111,7 +101,7 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
     }
 
     private fun isAutomaton(params: Array<String>): Boolean {
-        return !Arrays.asList(*params).contains(OPT_STEP)
+        return !listOf(*params).contains(OPT_STEP)
     }
 
     fun run() {
@@ -158,10 +148,10 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
 
     private fun calculateCellSize(): Int {
         val screenSize = screenSize
-        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary!!.y.toDouble()),
-                calculateCellSize(screenSize.width, boundary!!.x.toDouble())),
-                MAX_CELL_SIZE),
-                MIN_CELL_SIZE)
+        return calculateCellSize(screenSize.height, boundary!!.y.toDouble())
+                .coerceAtMost(calculateCellSize(screenSize.width, boundary!!.x.toDouble()))
+                .coerceAtMost(MAX_CELL_SIZE)
+                .coerceAtLeast(MIN_CELL_SIZE)
     }
 
     private fun calculateCellSize(screenSize: Int, numberOfCells: Double): Int {
@@ -199,7 +189,7 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
     private fun evolve() {
         gameOfLife = gameOfLife!!.tick()
         evolveToggle++
-        window.title = String.format("%s - #%d", path, iteration)
+        window.title = "$path - #$iteration"
         iteration++
     }
 
@@ -250,9 +240,7 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
         return result
     }
 
-    private fun getTitle(path: String?): String {
-        return String.format("Seed: %s", path)
-    }
+    private fun getTitle(path: String?) = "Seed: $path"
 
     companion object {
         private const val WAIT_TIME = 100
@@ -260,7 +248,6 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
         private const val MIN_CELL_SIZE = 6
         private const val OPT_STEP = "-s"
         private const val OPT_WAIT = "-w"
-        private val LOG = Logger.getLogger(GameOfLifeUI::class.java.name)
 
         @JvmStatic
         fun main(params: Array<String>) {
