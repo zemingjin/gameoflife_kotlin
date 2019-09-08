@@ -33,8 +33,8 @@ class GameOfLife(private val liveCells: Map<String, Cell>) {
                 .distinct()
                 .filter { isInActive(it) }
 
-    private fun filteredCells(cells: Stream<Cell>, ifotFiltered: (Long) -> Boolean) =
-            cells.filter { ifotFiltered(countActiveNeighbours(it)) }
+    private fun filteredCells(cells: Stream<Cell>, ifNotFiltered: (Long) -> Boolean) =
+            cells.filter { ifNotFiltered(countActiveNeighbours(it)) }
 
     fun isActive(x: Int, y: Int) = isActive(toString(x, y))
 
