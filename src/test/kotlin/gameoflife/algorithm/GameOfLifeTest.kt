@@ -12,7 +12,7 @@ class GameOfLifeTest {
 
     @Test(expected = RuntimeException::class)
     fun testInit() {
-        GameOfLife(HashMap()).getLiveCells()
+        GameOfLife(HashMap()).liveCells
     }
 
     private fun mockGameOfLife(seed: String): GameOfLife {
@@ -28,8 +28,8 @@ class GameOfLifeTest {
     fun testSeed() {
         val gameOfLife = mockGameOfLife("1|1, 1|2, 1|3")
 
-        assertEquals(3, gameOfLife.getLiveCells().size.toLong())
-        assertEquals("[1|1, 1|2, 1|3]", gameOfLife.getLiveCells().toString())
+        assertEquals(3, gameOfLife.liveCells.size.toLong())
+        assertEquals("[1|1, 1|2, 1|3]", gameOfLife.liveCells.toString())
     }
 
     @Test
@@ -49,16 +49,16 @@ class GameOfLifeTest {
     fun testBlinker() {
         var gameOfLife = mockGameOfLife("1|0, 1|1, 1|2").tick()
 
-        assertEquals("[0|1, 1|1, 2|1]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[0|1, 1|1, 2|1]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|0, 1|1, 1|2]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[1|0, 1|1, 1|2]", sort(gameOfLife.liveCells).toString())
     }
 
     @Test
     fun testBloker() {
         val gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 2|2")
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.tick().getLiveCells()).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.tick().liveCells).toString())
     }
 
     @Test(expected = RuntimeException::class)
@@ -66,24 +66,24 @@ class GameOfLifeTest {
         var gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3")
 
         gameOfLife = gameOfLife.tick()
-        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[3|1, 3|3, 4|2]", gameOfLife.getLiveCells().toString())
+        assertEquals("[3|1, 3|3, 4|2]", gameOfLife.liveCells.toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[3|2, 4|2]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[3|2, 4|2]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("", gameOfLife.getLiveCells().toString())
+        assertEquals("", gameOfLife.liveCells.toString())
     }
 
     @Test
     fun testBeacon() {
         var gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").tick()
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.getLiveCells()).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
     }
 
     @Test
