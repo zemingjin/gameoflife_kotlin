@@ -18,9 +18,9 @@ open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 
     private fun isNotThis(column: Int, row: Int) = x != column || y != row
 
-    override fun hashCode() = string.hashCode()
-
     override fun equals(other: Any?) = if (other is Cell) x == other.x && y == other.y else false
+
+    override fun hashCode() = string.hashCode()
 
     override fun toString() = string
 
