@@ -27,4 +27,4 @@ open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 
 val <T> Iterable<T>.stream get() = toList().stream()
 
-fun toString(x: Int, y: Int): String = "$x|$y"
+fun toString(x: Int, y: Int) = "$x|$y"
