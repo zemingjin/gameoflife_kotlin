@@ -1,19 +1,18 @@
-package gameoflife.algorithm;
+package gameoflife.algorithm
 
-import org.junit.Test;
+import org.junit.Test
 
-import java.util.stream.Collectors;
+import org.junit.Assert.*
+import kotlin.streams.toList
 
-import static org.junit.Assert.*;
-
-public class CellTest {
+class CellTest {
     @Test
-    public void testGetNeighbours() {
+    fun testGetNeighbours() {
         assertEquals("[0|0, 1|0, 2|0, 0|1, 2|1, 0|2, 1|2, 2|2]",
-                     new Cell(1, 1).getNeighbours().collect(Collectors.toList()).toString());
+                Cell(1, 1).neighbours.toList().toString())
         assertEquals("[-1|0, 0|0, 1|0, -1|1, 1|1, -1|2, 0|2, 1|2]",
-                     new Cell(0, 1).getNeighbours().collect(Collectors.toList()).toString());
+                Cell(0, 1).neighbours.toList().toString())
         assertEquals("[-1|-1, 0|-1, 1|-1, -1|0, 1|0, -1|1, 0|1, 1|1]",
-                     new Cell(0, 0).getNeighbours().collect(Collectors.toList()).toString());
+                Cell(0, 0).neighbours.toList().toString())
     }
 }

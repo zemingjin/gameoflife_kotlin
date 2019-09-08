@@ -1,27 +1,32 @@
-package gameoflife.app;
+package gameoflife.app
 
-import gameoflife.helper.IOHelperKt;
+import gameoflife.helper.*
 
-import java.util.logging.Logger;
+import java.util.logging.Logger
 
-class GameOfLifeUITest extends GameOfLifeUI {
-    private static final int ITERATIONS = 500;
-    private static final Logger LOG = Logger.getLogger(GameOfLifeUITest.class.getName());
+internal class GameOfLifeUITest private constructor(params: Array<String>) : ContinueCheck {
 
-    private int iterations = ITERATIONS;
+    private var iterations = ITERATIONS
+    private val gameOfLifeUI: GameOfLifeUI = GameOfLifeUI(params)
 
-    private GameOfLifeUITest(String[] params) {
-        super(params);
+    init {
+        gameOfLifeUI.setWaitTime(50)
+        gameOfLifeUI.isContinue = this
     }
 
-    @Override
-    public boolean isContinueFlag() {
-        return iterations-- >= 0;
+    override fun isContinue(): Boolean {
+        return iterations-- >= 0
     }
 
-    public static void main(String[] params) {
-        final long time = System.currentTimeMillis();
-        new GameOfLifeUITest(params).setWaitTime(0).run();
-        LOG.info("Total time: " + IOHelperKt.format(System.currentTimeMillis() - time));
+    companion object {
+        private const val ITERATIONS = 500
+        private val LOG = Logger.getLogger(GameOfLifeUITest::class.java.name)
+
+        @JvmStatic
+        fun main(params: Array<String>) {
+            val time = System.currentTimeMillis()
+            GameOfLifeUITest(params).gameOfLifeUI.run()
+            LOG.info("Total time: " + format(System.currentTimeMillis() - time))
+        }
     }
 }

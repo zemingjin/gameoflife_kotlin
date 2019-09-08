@@ -1,18 +1,18 @@
-package gameoflife.helper;
+package gameoflife.helper
 
-import org.junit.Test;
+import org.junit.Test
 
-import java.util.Arrays;
+import org.junit.Assert.*
 
-import static org.junit.Assert.*;
-
-public class IOHelperTest {
-    private static final String BEACON_FILE = "src/main/resources/beacon.seed";
-    private static final String BEACON = "[#P 4|4, OO.., OO.., ..OO, ..OO]";
-
+class IOHelperTest {
 
     @Test
-    public void testLoadSeeds() {
-        assertEquals(BEACON, Arrays.toString(IOHelperKt.loadSeeds(BEACON_FILE)));
+    fun testLoadSeeds() {
+        assertEquals(BEACON, loadSeeds(BEACON_FILE).contentToString())
+    }
+
+    companion object {
+        private const val BEACON_FILE = "src/main/resources/beacon.seed"
+        private const val BEACON = "[#P 4|4, OO.., OO.., ..OO, ..OO]"
     }
 }

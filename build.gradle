@@ -35,6 +35,22 @@ publishing {
         }
     }
 }
+
+test {
+    jvmArgs '--enable-preview'
+    testLogging {
+        showStandardStreams = true
+    }
+}
+jar {
+    manifest {
+        attributes "Main-Class": "gameoflife.app.GameOfLifeUI"
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"

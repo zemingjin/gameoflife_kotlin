@@ -1,40 +1,41 @@
-package gameoflife.algorithm;
+package gameoflife.algorithm
 
-import gameoflife.app.GameOfLifeUI;
+import gameoflife.app.GameOfLifeUI
 
-import java.util.Optional;
-import java.util.logging.Logger;
+import java.util.Optional
+import java.util.logging.Logger
 
-public final class GameOfLifePerformance {
-    private static final int ITERATIONS = 500;
-    private static final Logger LOG = Logger.getLogger(GameOfLifePerformance.class.getName());
+class GameOfLifePerformance private constructor() {
 
-    private GameOfLifePerformance() {
-    }
+    private fun run(params: Array<String>) {
 
-    private void run(String[] params) {
+        var gameOfLife = GameOfLifeUI(checkPath(params)).setWaitTime(0).gameOfLife
+        val time = System.currentTimeMillis()
 
-        GameOfLife gameOfLife = new GameOfLifeUI(checkPath(params)).setWaitTime(0).getGameOfLife();
-        final long time = System.currentTimeMillis();
-
-        LOG.info("Started...");
-        for (int i = 0; i < ITERATIONS; i++) {
-            gameOfLife = gameOfLife.tick();
+        LOG.info("Started...")
+        for (i in 0 until ITERATIONS) {
+            gameOfLife = gameOfLife?.tick()
         }
-        LOG.info(format(System.currentTimeMillis() - time));
+        LOG.info(format(System.currentTimeMillis() - time))
     }
 
-    private String[] checkPath(String[] params) {
+    private fun checkPath(params: Array<String>): Array<String> {
         return Optional.ofNullable(params)
-                .filter(p -> p.length > 0)
-                .orElseGet(() -> new String[]{ "src/main/resources/sidecar_gun.seed" });
+                .filter { it.isNotEmpty() }
+                .orElseGet { arrayOf("src/main/resources/sidecar_gun.seed") }
     }
 
-    public static void main(String[] params) {
-        new GameOfLifePerformance().run(params);
-    }
+    companion object {
+        private const val ITERATIONS = 500
+        private val LOG = Logger.getLogger(GameOfLifePerformance::class.java.name)
 
-    private static String format(long time) {
-        return String.format("Finished in %tM:%tS.%tL", time, time, time);
+        @JvmStatic
+        fun main(params: Array<String>) {
+            GameOfLifePerformance().run(params)
+        }
+
+        private fun format(time: Long): String {
+            return String.format("Finished in %tM:%tS.%tL", time, time, time)
+        }
     }
 }

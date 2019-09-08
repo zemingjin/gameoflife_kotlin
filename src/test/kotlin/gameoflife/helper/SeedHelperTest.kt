@@ -1,18 +1,18 @@
-package gameoflife.helper;
+package gameoflife.helper
 
-import org.junit.Test;
+import org.junit.Test
 
-public class SeedHelperTest {
-    private final SeedHelper seedHelper = new SeedHelper();
+class SeedHelperTest {
+    private val seedHelper = SeedHelper()
 
-    @Test(expected = RuntimeException.class)
-    public void testSeedToMapWithNull() {
-        seedHelper.seedToMap((String)null);
+    @Test(expected = RuntimeException::class)
+    fun testSeedToMapWithNull() {
+        seedHelper.seedToMap((null as String?)!!)
     }
 
-    @Test(expected = RuntimeException.class)
-    public void testSetBoundaryWithNull() {
-        seedHelper.seedToMap(new String[0]);
+    @Test(expected = RuntimeException::class)
+    fun testSetBoundaryWithNull() {
+        seedHelper.seedToMap(arrayOf())
     }
 
 }
