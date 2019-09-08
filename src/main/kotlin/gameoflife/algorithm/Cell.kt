@@ -20,16 +20,11 @@ open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
 
     override fun hashCode() = string.hashCode()
 
-    override fun equals(other: Any?) =
-            when {
-                (other === this) -> true
-                (other is Cell) -> x == other.x && y == other.y
-                else -> false
-            }
+    override fun equals(other: Any?) = if (other is Cell) x == other.x && y == other.y else false
 
     override fun toString() = string
 
-    override fun compareTo(other: Cell) = toString().compareTo(other.toString())
+    override fun compareTo(other: Cell) = string.compareTo(other.string)
 }
 
 fun toString(x: Int, y: Int) = "$x|$y"
