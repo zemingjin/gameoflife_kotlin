@@ -1,71 +1,47 @@
-package gameoflife.algorithm;
+package gameoflife.algorithm
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.Optional
+import java.util.stream.Stream
+import kotlin.streams.toList
 
-public class GameOfLife {
-    private final Map<String, Cell> liveCells;
-    private final Predicate<Long> isReproducible = n -> n == 3;
-    private final Predicate<Long> isNextGeneration = n -> 2 == n || n == 3;
+class GameOfLife(private val liveCells: Map<String, Cell>) {
+    private val isReproducible: (Long) -> Boolean = { n -> n == 3L }
+    private val isNextGeneration: (Long) -> Boolean = { n -> n in 2..3 }
 
-    public GameOfLife(Map<String, Cell> liveCells) {
-        this.liveCells = liveCells;
-    }
-
-    public GameOfLife tick() {
-        return new GameOfLife(getNextLiveCellsMap());
-    }
-
-    public boolean isActive(int x, int y) {
-        return isActive(CellKt.toString(x, y));
-    }
-
-    private boolean isActive(String key) {
-        return liveCells.get(key) != null;
-    }
-
-    Collection<Cell> getLiveCells() {
+    fun getLiveCells(): List<Cell> {
         return Optional.of(liveCells)
-                .filter(cells -> !cells.isEmpty())
-                .map(Map::values)
-                .orElseThrow(() -> new RuntimeException("No more living cells"));
+                .filter { it.isNotEmpty() }
+                .map { it.values.toList() }
+                .orElseThrow { RuntimeException("No more living cells") }
     }
 
-    private Map<String, Cell> getNextLiveCellsMap() {
-        return Stream.concat(getNextGenerationCells(), getReproducibleCells())
-                .collect(Collectors.toMap(Cell::toString, cell -> cell));
-    }
+    fun tick(): GameOfLife = GameOfLife(nextLiveCellsMap)
 
-    private Stream<Cell> getNextGenerationCells() {
-        return filteredCells(getLiveCells().stream(), isNextGeneration);
-    }
+    private val nextLiveCellsMap: Map<String, Cell>
+        get() = Stream.concat(nextGenerationCells, reproducibleCells)
+                .map { (it.toString() to it) }
+                .toList()
+                .toMap()
 
-    private Stream<Cell> getReproducibleCells() {
-        return filteredCells(getInactiveNeighbours(), isReproducible);
-    }
+    private val nextGenerationCells: Stream<Cell> get() = filteredCells(getLiveCells().stream(), isNextGeneration)
 
-    private Stream<Cell> filteredCells(Stream<Cell> cells, Predicate<Long> isActiveCell) {
-        return cells.filter(cell -> isActiveCell.test(countActiveNeighbours(cell)));
-    }
+    private val reproducibleCells: Stream<Cell> get() = filteredCells(inactiveNeighbours, isReproducible)
 
-    private long countActiveNeighbours(Cell cell) {
-        return cell.getNeighbours()
-                .filter(c -> isActive(c.toString()))
-                .count();
-    }
-
-    Stream<Cell> getInactiveNeighbours() {
-        return getLiveCells().stream()
-                .flatMap(Cell::getNeighbours)
+    val inactiveNeighbours: Stream<Cell>
+        get() = getLiveCells().stream()
+                .flatMap { it.neighbours }
                 .distinct()
-                .filter(this::isNotActive);
-    }
+                .filter { isNotActive(it) }
 
-    private boolean isNotActive(Cell cell) {
-        return !isActive(cell.toString());
-    }
+    private fun filteredCells(cells: Stream<Cell>, isActiveCell: (Long) -> Boolean) =
+            cells.filter { isActiveCell(countActiveNeighbours(it)) }
+
+    fun isActive(x: Int, y: Int) = isActive(toString(x, y))
+
+    private fun isActive(key: String) = liveCells[key] != null
+
+    private fun isNotActive(cell: Cell) = !isActive(cell.toString())
+
+    private fun countActiveNeighbours(cell: Cell) = cell.neighbours.filter { c -> isActive(c.toString()) }.count()
+
 }

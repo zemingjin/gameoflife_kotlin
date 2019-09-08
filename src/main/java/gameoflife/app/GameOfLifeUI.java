@@ -122,8 +122,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private void setupFrame() {
         setCellSize(calculateCellSize());
 
-        final int width = calculatePanelSize(boundary.x);
-        final int height = calculatePanelSize(boundary.y);
+        final int width = calculatePanelSize(boundary.getX());
+        final int height = calculatePanelSize(boundary.getY());
 
         setSize(width, height);
         setFocusable(true);
@@ -138,8 +138,8 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
 
     private int calculateCellSize() {
         final Dimension screenSize = getScreenSize();
-        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary.y),
-                                          calculateCellSize(screenSize.width, boundary.x)),
+        return Math.max(Math.min(Math.min(calculateCellSize(screenSize.height, boundary.getY()),
+                                          calculateCellSize(screenSize.width, boundary.getX())),
                                  MAX_CELL_SIZE),
                         MIN_CELL_SIZE);
     }
@@ -214,10 +214,10 @@ public class GameOfLifeUI extends JComponent implements KeyEventPostProcessor {
     private final List<Function<Graphics, Function<Integer, Consumer<Integer>>>> LAMBDAS = Arrays.asList(fillCell, drawBorder);
 
     private void paintRow(Consumer<Integer> actor) {
-        IntStream.range(0, boundary.x).forEach(actor::accept);
+        IntStream.range(0, boundary.getX()).forEach(actor::accept);
     }
     private void paintRows(Function<Integer, Consumer<Integer>> paint) {
-        IntStream.range(0, boundary.y).forEach(y -> paintRow(paint.apply(y)));
+        IntStream.range(0, boundary.getY()).forEach(y -> paintRow(paint.apply(y)));
     }
 
     @Override

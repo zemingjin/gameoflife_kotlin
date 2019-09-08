@@ -73,7 +73,7 @@ public class GameOfLifeTest {
         gameOfLife = gameOfLife.tick();
         assertEquals("[3|1, 3|3, 4|2]", gameOfLife.getLiveCells().toString());
         gameOfLife = gameOfLife.tick();
-        assertEquals("[3|2, 4|2]", gameOfLife.getLiveCells().toString());
+        assertEquals("[3|2, 4|2]", sort(gameOfLife.getLiveCells()).toString());
         gameOfLife = gameOfLife.tick();
         assertEquals("", gameOfLife.getLiveCells().toString());
     }

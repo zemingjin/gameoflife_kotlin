@@ -1,19 +1,11 @@
-package gameoflife.app;
+package gameoflife.app
 
-import gameoflife.algorithm.Cell;
+import gameoflife.algorithm.Cell
 
-public class Boundary extends Cell {
-    public Boundary(int x, int y) {
-        super(x, y);
-    }
+class Boundary(x: Int, y: Int) : Cell(x, y) {
 
-    boolean isInBound(Cell that) {
-        return checkBoundary(that.x, x) && checkBoundary(that.y, y);
-    }
+    fun isInBound(that: Cell) = checkBoundary(that.x, x) && checkBoundary(that.y, y)
 
-    private static boolean checkBoundary(int value, int boundary) {
-        return 0 <= value && value < boundary;
-    }
-
+    private fun checkBoundary(value: Int, boundary: Int) = value in 0 until boundary
 }
 

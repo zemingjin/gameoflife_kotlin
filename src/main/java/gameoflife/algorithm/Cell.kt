@@ -1,61 +1,35 @@
-package gameoflife.algorithm;
+package gameoflife.algorithm
 
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
+import java.util.stream.IntStream
+import java.util.stream.Stream
 
-public class Cell implements Comparable<Cell> {
-    private final String string;
-    public final int x, y;
+open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
+    private val string = toString(x, y)
 
-    public Cell(int x, int y) {
-        this.x = x;
-        this.y = y;
-        string = toString(x, y);
-    }
+    val neighbours: Stream<Cell>
+        get() = IntStream.rangeClosed(y - 1, y + 1)
+                .mapToObj { getNeighboursByRow(it) }
+                .flatMap { it }
 
-    Stream<Cell> getNeighbours() {
-        return IntStream.rangeClosed(y - 1, y + 1)
-                .mapToObj(this::getNeighboursByRow)
-                .flatMap(s -> s);
-    }
+    private fun getNeighboursByRow(row: Int) =
+            IntStream.rangeClosed(x - 1, x + 1)
+                .filter {isNotThis(it, row) }
+                .mapToObj { Cell(it, row) }
 
-    private Stream<Cell> getNeighboursByRow(int y) {
-        return IntStream.rangeClosed(x - 1, x + 1)
-                .mapToObj(x -> new Cell(x, y))
-                .filter(this::isNotThis);
-    }
+    private fun isNotThis(column: Int, row: Int) = x != column || y != row
 
-    private boolean isNotThis(Cell that) {
-        return !equals(that);
-    }
+    override fun hashCode() = string.hashCode()
 
-    @Override
-    public int hashCode() {
-        return string.hashCode();
-    }
+    override fun equals(other: Any?) =
+            when {
+                (other === this) -> true
+                (other is Cell) -> x == other.x && y == other.y
+                else -> false
+            }
 
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) {
-            return true;
-        } else if (obj instanceof Cell) {
-            Cell that = (Cell)obj;
-            return x == that.x && y == that.y;
-        }
-        return false;
-    }
+    override fun toString() = string
 
-    @Override
-    public String toString() {
-        return string;
-    }
-
-    @Override
-    public int compareTo(Cell that) {
-        return toString().compareTo(that.toString());
-    }
-
-    static String toString(int x, int y) {
-        return x + "|" + y;
-    }
+    override fun compareTo(other: Cell) = toString().compareTo(other.toString())
 }
+
+fun toString(x: Int, y: Int): String = "$x|$y"

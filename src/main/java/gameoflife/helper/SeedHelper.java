@@ -48,7 +48,7 @@ public class SeedHelper {
         return seedLiveCells(Arrays.copyOfRange(seeds, 1, seeds.length));
     }
 
-    public Boundary getBoundary(String seed) {
+    private Boundary getBoundary(String seed) {
         return getCellFromString(seed, Boundary::new);
     }
 
