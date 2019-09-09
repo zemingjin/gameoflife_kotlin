@@ -1,12 +1,15 @@
 package gameoflife.app
 
 import gameoflife.algorithm.GameOfLife
+import gameoflife.app.GameOfLifeUI.Companion.MAX_CELL_SIZE
 import java.awt.Graphics
+import java.util.stream.IntStream
 import javax.swing.JPanel
 
 class Paint(private val panel: JPanel) {
-    var cellSize: Int? = null
+    var cellSize: Int? = MAX_CELL_SIZE
     var gameOfLife: GameOfLife? = null
+    var boundary: Boundary? = null
 
     private val fillSize: Int get() = cellSize!! - 2
 
@@ -20,14 +23,19 @@ class Paint(private val panel: JPanel) {
         graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize!!, cellSize!!)
     }}}
 
-    private val paints = arrayOf(fillCell, drawBorder)
+    private val paints = listOf(fillCell, drawBorder)
 
-    fun paint(graphics: Graphics) {
-        paints.forEach { it(graphics) }
-    }
-
-    private fun getColor(x: Int, y: Int) = if (gameOfLife!!.isActive(x, y)) panel.foreground else panel.background
-    private fun getFillPosition(index: Int) = getCellPosition(index) + 1
     private fun getCellPosition(index: Int) = index * cellSize!!
 
+    private fun getFillPosition(index: Int) = getCellPosition(index) + 1
+
+    private fun getColor(x: Int, y: Int) = if (gameOfLife!!.isActive(x, y)) panel.foreground else panel.background
+
+    private fun paintRow(actor: (Int) -> Unit) { IntStream.range(0, boundary!!.x).forEach { actor(it) } }
+
+    private fun paintRows(paint: (Int) -> (Int) -> Unit) {
+        IntStream.range(0, boundary!!.y).forEach { paintRow(paint(it)) }
+    }
+
+    fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
 }

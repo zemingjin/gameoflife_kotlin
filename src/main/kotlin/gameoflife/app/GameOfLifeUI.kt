@@ -14,27 +14,24 @@ import java.awt.KeyboardFocusManager
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import java.util.Optional
-import java.util.stream.IntStream
 import javax.swing.JPanel
 
-open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
-    var isContinue = object : ContinueCheck {
-        override fun isContinue() = isContinueFlag
-    }
+class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
+    var isContinue = object : ContinueCheck { override fun isContinue() = isContinueFlag }
+    private val gameOfLife get() = paint.gameOfLife
 
     private val seedHelper = SeedHelper()
-    var gameOfLife: GameOfLife? = null
     private val window = JFrame()
     private var isContinueFlag = true
     private var evolveToggle = 1
     private var automaton = true
     private var path: String? = null
-    private var boundary: Boundary? = null
     private var iteration: Int = 0
     private var waitTime: Int = 0
     private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
-
     private val isContinueToEvolve get() = automaton || evolveToggle == 0
+    private val boundary get() = paint.boundary
+    private val paint = Paint(this)
 
     init {
         Optional.of(params)
@@ -45,14 +42,15 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
 
     private fun setup(params: Array<String>): GameOfLifeUI {
         path = params[0]
-        gameOfLife = buildGameOfLife(loadSeeds(path!!))
+        paint.gameOfLife = buildGameOfLife(loadSeeds(path!!))
+        paint.gameOfLife = gameOfLife
         automaton = params.isAutomaton
         waitTime = params.waitTime
         return this
     }
 
     private fun buildGameOfLife(seeds: Array<String>): GameOfLife {
-        boundary = seedHelper.getBoundaryFromHeader(seeds)
+        paint.boundary = seedHelper.getBoundaryFromHeader(seeds)
         return GameOfLife(seedHelper.seedToMap(seeds))
     }
 
@@ -85,7 +83,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     }
 
     private fun setupFrame() {
-        cellSize = calculateCellSize
+        paint.cellSize = calculateCellSize
 
         val width = calculatePanelSize(boundary!!.x.toDouble())
         val height = calculatePanelSize(boundary!!.y.toDouble())
@@ -112,7 +110,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private fun calculateCellSize(screenSize: Int, numberOfCells: Double) =
             ((screenSize * 3).toDouble() / 4.0 / numberOfCells).toInt()
 
-    private fun calculatePanelSize(position: Double) = (position * cellSize).toInt()
+    private fun calculatePanelSize(position: Double) = (position * cellSize!!).toInt()
 
     private fun getHorizontalPosition(panelWidth: Int) = calculatePosition(screenSize.width, getFrameWidth(panelWidth))
 
@@ -127,40 +125,14 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private fun calculateInsertsValue(calculate: (Insets) -> Int) = calculate(window.insets)
 
     private fun evolve() {
-        gameOfLife = gameOfLife!!.tick()
+        paint.gameOfLife = gameOfLife!!.tick()
         evolveToggle++
         window.title = "$path - #$iteration"
         iteration++
     }
 
-    private var cellSize = MAX_CELL_SIZE
-    private val fillSize: Int get() = cellSize - 2
-
-    private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
-        graphics.color = getColor(x, y)
-        graphics.fillRect(getFillPosition(x), getFillPosition(y), fillSize, fillSize)
-    }}}
-
-    private val drawBorder: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
-        graphics.color = foreground
-        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize)
-    }}}
-
-    private val paints = listOf(fillCell, drawBorder)
-
-    private fun getCellPosition(index: Int) = index * cellSize
-
-    private fun getFillPosition(index: Int) = getCellPosition(index) + 1
-
-    private fun getColor(x: Int, y: Int) = if (gameOfLife!!.isActive(x, y)) foreground else background
-
-    private fun paintRow(actor: (Int) -> Unit) { IntStream.range(0, boundary!!.x).forEach { actor(it) } }
-
-    private fun paintRows(paint: (Int) -> (Int) -> Unit) {
-        IntStream.range(0, boundary!!.y).forEach { paintRow(paint(it)) }
-    }
-
-    override fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
+    private val cellSize get() = paint.cellSize
+    override fun paint(graphics: Graphics) { paint.paint(graphics) }
 
     @Synchronized
     private fun waitAWhile() {
@@ -185,7 +157,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private fun getTitle(path: String?) = "Seed: $path"
 
     companion object {
-        private const val MAX_CELL_SIZE = 100
+        const val MAX_CELL_SIZE = 100
         private const val MIN_CELL_SIZE = 6
 
         @JvmStatic
