@@ -10,9 +10,9 @@ import kotlin.streams.toList
 class GameOfLifeTest {
     private val seedHelper = SeedHelper()
 
-    @Test(expected = RuntimeException::class)
+    @Test
     fun testInit() {
-        GameOfLife(HashMap()).liveCells
+        assertEquals("[]", GameOfLife(HashMap()).liveCells.toString())
     }
 
     private fun mockGameOfLife(seed: String): GameOfLife {
@@ -61,7 +61,8 @@ class GameOfLifeTest {
         assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.tick().liveCells).toString())
     }
 
-    @Test(expected = RuntimeException::class)
+
+    @Test
     fun testToad() {
         var gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3")
 
@@ -72,7 +73,7 @@ class GameOfLifeTest {
         gameOfLife = gameOfLife.tick()
         assertEquals("[3|2, 4|2]", sort(gameOfLife.liveCells).toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("", gameOfLife.liveCells.toString())
+        assertEquals("[]", gameOfLife.liveCells.toString())
     }
 
     @Test
@@ -93,7 +94,6 @@ class GameOfLifeTest {
         assertTrue(gameOfLife.isActive(1, 1))
         assertTrue(gameOfLife.isActive(4, 3))
         assertFalse(gameOfLife.isActive(1, 4))
-        //        assertFalse(gameOfLife.isActive(5, 5));
     }
 
     private fun sort(list: Collection<Cell>): List<Cell> {
