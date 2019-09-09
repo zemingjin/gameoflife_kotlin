@@ -7,18 +7,13 @@ open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
     private val string = toString(x, y)
 
     val neighbours: Stream<Cell>
-        get() = IntStream.rangeClosed(y - 1, y + 1)
-                .mapToObj { getNeighboursByRow(it) }
-                .flatMap { it }
+        get() = IntStream.rangeClosed(y-1, y+1).mapToObj { getNeighboursByRow(it) }.flatMap { it.stream() }
 
-    private fun getNeighboursByRow(row: Int) =
-            IntStream.rangeClosed(x - 1, x + 1)
-                .filter { isNotThis(it, row) }
-                .mapToObj { Cell(it, row) }
+    private fun getNeighboursByRow(row: Int) = (x-1..x+1).filter { !equals(it, row) }.map { Cell(it, row) }
 
-    private fun isNotThis(column: Int, row: Int) = x != column || y != row
+    private fun equals(column: Int, row: Int) = x == column && y == row
 
-    override fun equals(other: Any?) = if (other is Cell) x == other.x && y == other.y else false
+    override fun equals(other: Any?) = if (other is Cell) equals(other.x, other.y) else false
 
     override fun hashCode() = string.hashCode()
 

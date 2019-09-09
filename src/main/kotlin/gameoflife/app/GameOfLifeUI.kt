@@ -18,7 +18,7 @@ import javax.swing.JPanel
 
 class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     var isContinue = object : ContinueCheck { override fun isContinue() = isContinueFlag }
-    private val gameOfLife get() = paint.gameOfLife
+    val gameOfLife get() = paint.gameOfLife
 
     private val seedHelper = SeedHelper()
     private val window = JFrame()
