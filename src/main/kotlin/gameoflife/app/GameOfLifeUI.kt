@@ -25,7 +25,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private val seedHelper = SeedHelper()
     var gameOfLife: GameOfLife? = null
     private val window = JFrame()
-    open var isContinueFlag = true
+    private var isContinueFlag = true
     private var evolveToggle = 1
     private var automaton = true
     private var path: String? = null
@@ -124,7 +124,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
 
     private fun getFrameHeight(panelHeight: Int) = panelHeight + calculateInsertsValue { it.top + it.bottom }
 
-    private fun calculateInsertsValue(getter: (Insets) -> Int) = getter(window.insets)
+    private fun calculateInsertsValue(calculate: (Insets) -> Int) = calculate(window.insets)
 
     private fun evolve() {
         gameOfLife = gameOfLife!!.tick()
@@ -162,6 +162,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
 
     override fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
 
+    @Synchronized
     private fun waitAWhile() {
         if (waitTime > 0) {
               Thread.sleep(waitTime.toLong())
