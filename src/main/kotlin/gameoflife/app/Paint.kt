@@ -5,11 +5,10 @@ import java.awt.Graphics
 import javax.swing.JPanel
 
 class Paint(private val panel: JPanel) {
-    var gridSize: Boundary? = null
     var cellSize: Int? = null
     var gameOfLife: GameOfLife? = null
 
-     private val fillSize: Int get() = cellSize!! - 2
+    private val fillSize: Int get() = cellSize!! - 2
 
     private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
         graphics.color = getColor(x, y)

@@ -15,7 +15,6 @@ import java.awt.Toolkit
 import java.awt.event.KeyEvent
 import java.util.Optional
 import java.util.stream.IntStream
-import java.util.stream.Stream
 import javax.swing.JPanel
 
 open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
@@ -33,24 +32,9 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private var boundary: Boundary? = null
     private var iteration: Int = 0
     private var waitTime: Int = 0
+    private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
 
     private val isContinueToEvolve get() = automaton || evolveToggle == 0
-
-    private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
-    private var cellSize = MAX_CELL_SIZE
-    private val fillSize: Int get() = cellSize - 2
-
-    private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
-        graphics.color = getColor(x, y)
-        graphics.fillRect(getFillPosition(x), getFillPosition(y), fillSize, fillSize)
-    }}}
-
-    private val drawBorder: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
-        graphics.color = foreground
-        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize)
-    }}}
-
-    private val paints = listOf(fillCell, drawBorder)
 
     init {
         Optional.of(params)
@@ -62,8 +46,8 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private fun setup(params: Array<String>): GameOfLifeUI {
         path = params[0]
         gameOfLife = buildGameOfLife(loadSeeds(path!!))
-        automaton = isAutomaton(params)
-        waitTime = getWaitTime(params)
+        automaton = params.isAutomaton
+        waitTime = params.waitTime
         return this
     }
 
@@ -72,20 +56,10 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
         return GameOfLife(seedHelper.seedToMap(seeds))
     }
 
-    private fun getWaitTime(params: Array<String>): Int {
-        return Stream.of(*params)
-                .filter { param -> param.startsWith(OPT_WAIT) }
-                .map { param -> Integer.parseInt(param.substring(OPT_WAIT.length)) }
-                .findFirst()
-                .orElse(WAIT_TIME)
-    }
-
     fun setWaitTime(waitTime: Int): GameOfLifeUI {
         this.waitTime = waitTime
         return this
     }
-
-    private fun isAutomaton(params: Array<String>) = !listOf(*params).contains(OPT_STEP)
 
     fun run() {
         setupKeyboardListener()
@@ -111,7 +85,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     }
 
     private fun setupFrame() {
-        cellSize = calculateCellSize()
+        cellSize = calculateCellSize
 
         val width = calculatePanelSize(boundary!!.x.toDouble())
         val height = calculatePanelSize(boundary!!.y.toDouble())
@@ -127,7 +101,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
         window.contentPane.add(this)
     }
 
-    private fun calculateCellSize(): Int {
+    private val calculateCellSize: Int get() {
         val screenSize = screenSize
         return calculateCellSize(screenSize.height, boundary!!.y.toDouble())
                 .coerceAtMost(calculateCellSize(screenSize.width, boundary!!.x.toDouble()))
@@ -158,6 +132,21 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
         window.title = "$path - #$iteration"
         iteration++
     }
+
+    private var cellSize = MAX_CELL_SIZE
+    private val fillSize: Int get() = cellSize - 2
+
+    private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
+        graphics.color = getColor(x, y)
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), fillSize, fillSize)
+    }}}
+
+    private val drawBorder: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
+        graphics.color = foreground
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize)
+    }}}
+
+    private val paints = listOf(fillCell, drawBorder)
 
     private fun getCellPosition(index: Int) = index * cellSize
 
@@ -195,11 +184,8 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private fun getTitle(path: String?) = "Seed: $path"
 
     companion object {
-        private const val WAIT_TIME = 100
         private const val MAX_CELL_SIZE = 100
         private const val MIN_CELL_SIZE = 6
-        private const val OPT_STEP = "-s"
-        private const val OPT_WAIT = "-w"
 
         @JvmStatic
         fun main(params: Array<String>) {
