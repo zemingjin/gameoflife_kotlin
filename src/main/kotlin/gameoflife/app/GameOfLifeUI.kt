@@ -26,7 +26,6 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private val seedHelper = SeedHelper()
     private var gameOfLife: GameOfLife? = null
     private val window = JFrame()
-    private var cellSize = MAX_CELL_SIZE
     open var isContinueFlag = true
     private var evolveToggle = 1
     private var automaton = true
@@ -38,6 +37,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     private val isContinueToEvolve get() = automaton || evolveToggle == 0
 
     private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
+    private var cellSize = MAX_CELL_SIZE
     private val fillSize: Int get() = cellSize - 2
 
     private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
@@ -98,7 +98,6 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
                 evolve()
             }
         }
-
         close()
     }
 
