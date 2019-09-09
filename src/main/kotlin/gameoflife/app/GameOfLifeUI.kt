@@ -4,10 +4,8 @@ import gameoflife.algorithm.GameOfLife
 import gameoflife.helper.*
 import gameoflife.helper.SeedHelper
 
-import javax.swing.JComponent
 import javax.swing.JFrame
 import javax.swing.WindowConstants
-import java.awt.Color
 import java.awt.Dimension
 import java.awt.Graphics
 import java.awt.Insets
@@ -18,17 +16,15 @@ import java.awt.event.KeyEvent
 import java.util.Optional
 import java.util.stream.IntStream
 import java.util.stream.Stream
+import javax.swing.JPanel
 
-open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProcessor {
+open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     var isContinue = object : ContinueCheck {
-        override fun isContinue(): Boolean {
-            return isContinueFlag
-        }
+        override fun isContinue() = isContinueFlag
     }
 
     private val seedHelper = SeedHelper()
-    var gameOfLife: GameOfLife? = null
-        private set
+    private var gameOfLife: GameOfLife? = null
     private val window = JFrame()
     private var cellSize = MAX_CELL_SIZE
     open var isContinueFlag = true
@@ -44,28 +40,17 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
     private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
     private val fillSize: Int get() = cellSize - 2
 
-    private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit =
-            { graphics ->
-                { y ->
-                    { x ->
-                        graphics.color = getColor(x, y)
-                        graphics.fillRect(getFillPosition(x), getFillPosition(y), fillSize, fillSize)
-                    }
-                }
-            }
+    private val fillCell: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
+        graphics.color = getColor(x, y)
+        graphics.fillRect(getFillPosition(x), getFillPosition(y), fillSize, fillSize)
+    }}}
 
+    private val drawBorder: (Graphics) -> (Int) -> (Int) -> Unit = { graphics -> { y -> { x ->
+        graphics.color = foreground
+        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize)
+    }}}
 
-    private val drawBorder: (Graphics) -> (Int) -> (Int) -> Unit =
-            { graphics ->
-                { y ->
-                    { x ->
-                        graphics.color = foreground
-                        graphics.drawRect(getCellPosition(x), getCellPosition(y), cellSize, cellSize)
-                    }
-                }
-            }
-
-    private val LAMBDAS = listOf(fillCell, drawBorder)
+    private val paints = listOf(fillCell, drawBorder)
 
     init {
         Optional.of(params)
@@ -100,9 +85,7 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
         return this
     }
 
-    private fun isAutomaton(params: Array<String>): Boolean {
-        return !listOf(*params).contains(OPT_STEP)
-    }
+    private fun isAutomaton(params: Array<String>) = !listOf(*params).contains(OPT_STEP)
 
     fun run() {
         setupKeyboardListener()
@@ -125,12 +108,11 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
     }
 
     private fun setupKeyboardListener() {
-        KeyboardFocusManager.getCurrentKeyboardFocusManager()
-                .addKeyEventPostProcessor(this)
+        KeyboardFocusManager.getCurrentKeyboardFocusManager().addKeyEventPostProcessor(this)
     }
 
     private fun setupFrame() {
-        setCellSize(calculateCellSize())
+        cellSize = calculateCellSize()
 
         val width = calculatePanelSize(boundary!!.x.toDouble())
         val height = calculatePanelSize(boundary!!.y.toDouble())
@@ -154,37 +136,22 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
                 .coerceAtLeast(MIN_CELL_SIZE)
     }
 
-    private fun calculateCellSize(screenSize: Int, numberOfCells: Double): Int {
-        return ((screenSize * 3).toDouble() / 4.0 / numberOfCells).toInt()
-    }
+    private fun calculateCellSize(screenSize: Int, numberOfCells: Double) =
+            ((screenSize * 3).toDouble() / 4.0 / numberOfCells).toInt()
 
-    private fun calculatePanelSize(position: Double): Int {
-        return (position * cellSize).toInt()
-    }
+    private fun calculatePanelSize(position: Double) = (position * cellSize).toInt()
 
-    private fun getHorizontalPosition(panelWidth: Int): Int {
-        return calculatePosition(screenSize.width, getFrameWidth(panelWidth))
-    }
+    private fun getHorizontalPosition(panelWidth: Int) = calculatePosition(screenSize.width, getFrameWidth(panelWidth))
 
-    private fun getVerticalPosition(panelHeight: Int): Int {
-        return calculatePosition(screenSize.height, getFrameHeight(panelHeight))
-    }
+    private fun getVerticalPosition(panelHeight: Int) = calculatePosition(screenSize.height, getFrameHeight(panelHeight))
 
-    private fun calculatePosition(screenSize: Int, frameSize: Int): Int {
-        return (screenSize - frameSize) / 2
-    }
+    private fun calculatePosition(screenSize: Int, frameSize: Int) = (screenSize - frameSize) / 2
 
-    private fun getFrameWidth(panelWidth: Int): Int {
-        return panelWidth + calculateInsertsValue { it.left + it.right }
-    }
+    private fun getFrameWidth(panelWidth: Int) = panelWidth + calculateInsertsValue { it.left + it.right }
 
-    private fun getFrameHeight(panelHeight: Int): Int {
-        return panelHeight + calculateInsertsValue { it.top + it.bottom }
-    }
+    private fun getFrameHeight(panelHeight: Int) = panelHeight + calculateInsertsValue { it.top + it.bottom }
 
-    private fun calculateInsertsValue(getter: (Insets) -> Int): Int {
-        return getter(window.insets)
-    }
+    private fun calculateInsertsValue(getter: (Insets) -> Int) = getter(window.insets)
 
     private fun evolve() {
         gameOfLife = gameOfLife!!.tick()
@@ -193,38 +160,24 @@ open class GameOfLifeUI(params: Array<String>) : JComponent(), KeyEventPostProce
         iteration++
     }
 
-    private fun getCellPosition(index: Int): Int {
-        return index * cellSize
-    }
+    private fun getCellPosition(index: Int) = index * cellSize
 
-    private fun getFillPosition(index: Int): Int {
-        return getCellPosition(index) + 1
-    }
+    private fun getFillPosition(index: Int) = getCellPosition(index) + 1
 
-    private fun getColor(x: Int, y: Int): Color {
-        return if (gameOfLife!!.isActive(x, y)) foreground else background
-    }
+    private fun getColor(x: Int, y: Int) = if (gameOfLife!!.isActive(x, y)) foreground else background
 
-    private fun paintRow(actor: (Int) -> Unit) {
-        IntStream.range(0, boundary!!.x).forEach { actor(it) }
-    }
+    private fun paintRow(actor: (Int) -> Unit) { IntStream.range(0, boundary!!.x).forEach { actor(it) } }
 
     private fun paintRows(paint: (Int) -> (Int) -> Unit) {
         IntStream.range(0, boundary!!.y).forEach { paintRow(paint(it)) }
     }
 
-    override fun paint(graphics: Graphics) {
-        LAMBDAS.forEach { paintRows(it(graphics)) }
-    }
+    override fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
 
     private fun waitAWhile() {
         if (waitTime > 0) {
               Thread.sleep(waitTime.toLong())
         }
-    }
-
-    private fun setCellSize(value: Int) {
-        this.cellSize = value
     }
 
     override fun postProcessKeyEvent(e: KeyEvent): Boolean {
