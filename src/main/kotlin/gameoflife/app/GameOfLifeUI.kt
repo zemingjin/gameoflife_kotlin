@@ -23,7 +23,7 @@ open class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor
     }
 
     private val seedHelper = SeedHelper()
-    private var gameOfLife: GameOfLife? = null
+    var gameOfLife: GameOfLife? = null
     private val window = JFrame()
     open var isContinueFlag = true
     private var evolveToggle = 1
