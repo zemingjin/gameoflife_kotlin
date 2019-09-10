@@ -31,3 +31,6 @@ executing **mvn package assembly:single**.
  stepped mode.
 * **Esc** - exit the app.
 
+**Dependency Scan**
+./gradlew dependencyCheckAnalyze
+
