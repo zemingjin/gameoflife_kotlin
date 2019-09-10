@@ -5,10 +5,11 @@ import gameoflife.helper.buildGameOfLife
 class GameOfLifePerformance private constructor() {
 
     private fun run(params: Array<String>) {
+        println("Testing $DEF_TEST_PATH in $ITERATIONS times...")
         var gameOfLife = params.buildGameOfLife(DEF_TEST_PATH)
-        val time = System.currentTimeMillis()
 
         println("Started...")
+        val time = System.currentTimeMillis()
         for (i in 0 until ITERATIONS) { gameOfLife = gameOfLife.tick() }
         println((System.currentTimeMillis() - time).format)
     }
