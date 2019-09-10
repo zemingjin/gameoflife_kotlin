@@ -1,6 +1,7 @@
 package gameoflife.helper
 
 import gameoflife.algorithm.GameOfLife
+import java.lang.RuntimeException
 import java.util.*
 
 fun Array<String>.buildGameOfLife(defPath: String? = null): GameOfLife =
@@ -8,7 +9,7 @@ fun Array<String>.buildGameOfLife(defPath: String? = null): GameOfLife =
                 .map { loadSeeds(it) }
                 .map { SeedHelper().seedToMap(it) }
                 .map { GameOfLife(it) }
-                .orElseThrow()
+                .orElseThrow { throw RuntimeException("Invalid input source!")}
 
 private fun Array<String>.testPath(defPath: String?): String =
     Optional.of(this)

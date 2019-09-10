@@ -25,7 +25,7 @@ dependencies {
 
 group = 'com.expedia.www'
 version = '1.0-SNAPSHOT'
-sourceCompatibility = '11'
+sourceCompatibility = '1.8'
 
 publishing {
     publications {
@@ -36,7 +36,7 @@ publishing {
 }
 
 test {
-    jvmArgs '--enable-preview'
+//    jvmArgs '--enable-preview'
     testLogging {
         showStandardStreams = true
     }
@@ -52,11 +52,11 @@ jar {
 
 compileKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
 compileTestKotlin {
     kotlinOptions {
-        jvmTarget = "11"
+        jvmTarget = "1.8"
     }
 }
