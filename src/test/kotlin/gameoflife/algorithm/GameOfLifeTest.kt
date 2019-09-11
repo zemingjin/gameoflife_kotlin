@@ -33,13 +33,9 @@ class GameOfLifeTest {
     fun testGetDeadCells() {
         val gameOfLife = mockGameOfLife("1|0, 1|1, 1|2")
 
-        assertEquals(12, getNeighbouringDeadCellsList(gameOfLife).size.toLong())
+        assertEquals(12, gameOfLife.inactiveNeighbours.size.toLong())
         assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
-                getNeighbouringDeadCellsList(gameOfLife).toString())
-    }
-
-    private fun getNeighbouringDeadCellsList(gameOfLife: GameOfLife): List<Cell> {
-        return gameOfLife.inactiveNeighbours.toList()
+                gameOfLife.inactiveNeighbours.toString())
     }
 
     @Test
@@ -102,5 +98,4 @@ class GameOfLifeTest {
         assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
                 cells.toString())
     }
-
 }
