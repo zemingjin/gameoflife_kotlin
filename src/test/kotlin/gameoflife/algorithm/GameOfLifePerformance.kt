@@ -2,8 +2,7 @@ package gameoflife.algorithm
 
 import gameoflife.helper.buildGameOfLife
 
-class GameOfLifePerformance private constructor() {
-
+object GameOfLifePerformance {
     private fun run(params: Array<String>) {
         println("Testing $DEF_TEST_PATH in $ITERATIONS times...")
         var gameOfLife = params.buildGameOfLife(DEF_TEST_PATH)
@@ -14,13 +13,12 @@ class GameOfLifePerformance private constructor() {
         println((System.currentTimeMillis() - time).format)
     }
 
-    companion object {
-        @JvmStatic
-        fun main(params: Array<String>) {
-            GameOfLifePerformance().run(params)
-        }
+    @JvmStatic
+    fun main(params: Array<String>) {
+        run(params)
     }
 }
+
 private const val ITERATIONS = 500
 private const val DEF_TEST_PATH = "src/main/resources/sidecar_gun.seed"
 

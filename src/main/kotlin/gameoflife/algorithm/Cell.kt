@@ -1,13 +1,9 @@
 package gameoflife.algorithm
 
-import java.util.stream.IntStream
-import java.util.stream.Stream
-
 open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
     private val string = toString(x, y)
 
-    val neighbours: Stream<Cell>
-        get() = IntStream.rangeClosed(y-1, y+1).mapToObj { getNeighboursByRow(it) }.flatMap { it.stream() }
+    val neighbours: List<Cell> get() = (y-1..y+1).map { getNeighboursByRow(it) }.flatten()
 
     private fun getNeighboursByRow(row: Int) = (x-1..x+1).filter { !equals(it, row) }.map { Cell(it, row) }
 
