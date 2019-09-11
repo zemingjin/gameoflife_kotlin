@@ -2,31 +2,28 @@ package gameoflife.helper
 
 import gameoflife.app.Boundary
 import gameoflife.algorithm.Cell
+import java.lang.RuntimeException
 
-import java.util.Optional
 import java.util.stream.IntStream
-import java.util.stream.Stream
 import kotlin.streams.toList
 
-class SeedHelper {
+object SeedHelper {
 
     /**
      * This method is used only by tests
      * @param seeds the given seeds in the format of "1|1, 1|2, 1|3"
      * @return self
      */
-    fun seedToMap(seeds: String): Map<String, Cell> =
-            Optional.ofNullable(seeds)
-                .filter { it.isNotEmpty() }
-                .map { seedLiveCells(it) }
-                .orElseThrow { RuntimeException(String.format("Invalid seeds: '%s'", seeds)) }
+    fun seedToMap(seeds: String): Map<String, Cell> = seedLiveCells(checkSeeds(seeds))
 
-    private fun seedLiveCells(liveCells: String) =
-            Stream.of(*liveCells.split(CELL_DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray())
-                .map { getCellFromString(it) { x, y -> Cell(x, y)} }
+    private fun checkSeeds(seeds: String): String = seeds.takeIf { it.isNotEmpty() } ?: throw RuntimeException()
+
+    private fun seedLiveCells(liveCells: String): Map<String, Cell> {
+        return liveCells.split(CELL_DELIMITER).dropLastWhile { it.isEmpty() }.toTypedArray()
+                .map { getCellFromString(it) { x, y -> Cell(x, y) } }
                 .map { (it.toString() to it) }
-                .toList()
                 .toMap()
+    }
 
     private fun <T : Cell> getCellFromString(values: String, construct: (Int, Int) -> T): T {
         val indices = values.split(INDICES_DELIMITER.toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
@@ -60,9 +57,7 @@ class SeedHelper {
 
     private fun isLiveCell(c: Char) = c == LIVE_CELL
 
-    companion object {
-        private const val INDICES_DELIMITER = "\\|"
-        private const val CELL_DELIMITER = ", "
-        private const val LIVE_CELL = 'O'
-    }
+    private const val INDICES_DELIMITER = "\\|"
+    private const val CELL_DELIMITER = ", "
+    private const val LIVE_CELL = 'O'
 }

@@ -13,14 +13,12 @@ import java.awt.KeyEventPostProcessor
 import java.awt.KeyboardFocusManager
 import java.awt.Toolkit
 import java.awt.event.KeyEvent
-import java.util.Optional
 import javax.swing.JPanel
 
 class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     var isContinue = object : ContinueCheck { override fun isContinue() = isContinueFlag }
-    val gameOfLife get() = paint.gameOfLife
+    private val gameOfLife get() = paint.gameOfLife
 
-    private val seedHelper = SeedHelper()
     private val window = JFrame()
     private var isContinueFlag = true
     private var evolveToggle = 1
@@ -34,10 +32,8 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     private val paint = Paint(this)
 
     init {
-        Optional.of(params)
-                .filter { it.isNotEmpty() }
-                .map { this.setup(it) }
-                .orElseThrow { RuntimeException("Missing seeds") }
+        params.takeIf { it.isNotEmpty() }
+                .let { this.setup(it!!) }
     }
 
     private fun setup(params: Array<String>): GameOfLifeUI {
@@ -50,8 +46,8 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     }
 
     private fun buildGameOfLife(seeds: Array<String>): GameOfLife {
-        paint.boundary = seedHelper.getBoundaryFromHeader(seeds)
-        return GameOfLife(seedHelper.seedToMap(seeds))
+        paint.boundary = SeedHelper.getBoundaryFromHeader(seeds)
+        return GameOfLife(SeedHelper.seedToMap(seeds))
     }
 
     fun setWaitTime(waitTime: Int): GameOfLifeUI {

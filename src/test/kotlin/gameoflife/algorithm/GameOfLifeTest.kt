@@ -8,15 +8,13 @@ import org.junit.Assert.*
 import kotlin.streams.toList
 
 class GameOfLifeTest {
-    private val seedHelper = SeedHelper()
-
     @Test
     fun testInit() {
         assertEquals("[]", GameOfLife(HashMap()).liveCells.toString())
     }
 
     private fun mockGameOfLife(seed: String): GameOfLife {
-        return GameOfLife(seedHelper.seedToMap(seed))
+        return GameOfLife(SeedHelper.seedToMap(seed))
     }
 
     @Test(expected = RuntimeException::class)

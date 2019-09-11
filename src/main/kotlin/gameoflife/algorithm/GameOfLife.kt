@@ -1,13 +1,11 @@
 package gameoflife.algorithm
 
-import java.util.*
-
 class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
     val liveCells: List<Cell> get() {
-        return Optional.of(liveCellsMap)
-                .filter { it.isNotEmpty() }
-                .map { it.values.toList() }
-                .orElseGet { emptyList() }
+        return liveCellsMap
+                .takeIf { it.isNotEmpty() }
+                .let { it?.values?.toList() }
+                ?: emptyList()
     }
 
     private val isReproducible: (Long) -> Boolean = { n -> n == 3L }
