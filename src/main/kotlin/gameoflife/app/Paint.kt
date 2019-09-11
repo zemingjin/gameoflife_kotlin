@@ -33,9 +33,7 @@ class Paint(private val panel: JPanel) {
 
     private fun paintRow(actor: (Int) -> Unit) { IntStream.range(0, boundary!!.x).forEach { actor(it) } }
 
-    private fun paintRows(paint: (Int) -> (Int) -> Unit) {
-        IntStream.range(0, boundary!!.y).forEach { paintRow(paint(it)) }
-    }
+    private fun paintRows(paint: (Int) -> (Int) -> Unit) = (0 until boundary!!.y).forEach { paintRow(paint(it)) }
 
     fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
 }
