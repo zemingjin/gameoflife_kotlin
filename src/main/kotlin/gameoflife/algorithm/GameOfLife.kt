@@ -1,41 +1,37 @@
 package gameoflife.algorithm
 
 class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
-    val liveCells: List<Cell> get() {
-        return liveCellsMap
+    val liveCells: List<Cell> get() =
+        liveCellsMap
                 .takeIf { it.isNotEmpty() }
                 .let { it?.values?.toList() }
                 ?: emptyList()
-    }
 
     private val isReproducible: (Long) -> Boolean = { n -> n == 3L }
     private val isNextGeneration: (Long) -> Boolean = { n -> n in 2..3 }
 
     fun tick(): GameOfLife = GameOfLife(nextLiveCellsMap)
 
-    private val nextLiveCellsMap: Map<String, Cell> get() {
-        return (nextGenerationCells + reproducibleCells)
+    private val nextLiveCellsMap: Map<String, Cell> get() =
+        (nextGenerationCells + reproducibleCells)
                 .distinct()
                 .map { (it.toString() to it) }
                 .toList()
                 .toMap()
-    }
 
     private val nextGenerationCells get() = filteredCells(liveCells, isNextGeneration)
 
     private val reproducibleCells get() = filteredCells(inactiveNeighbours, isReproducible)
 
-    val inactiveNeighbours: List<Cell> get() {
-        return liveCells
+    val inactiveNeighbours: List<Cell> get() =
+        liveCells
                 .map { it.neighbours }
                 .flatten()
                 .distinct()
                 .filter { isInactive(it) }
-    }
 
-    private fun filteredCells(cells: List<Cell>, ifNotFiltered: (Long) -> Boolean): List<Cell> {
-        return cells.filter { ifNotFiltered(countActiveNeighbours(it)) }
-    }
+    private fun filteredCells(cells: List<Cell>, ifNotFiltered: (Long) -> Boolean): List<Cell> =
+            cells.filter { ifNotFiltered(countActiveNeighbours(it)) }
 
     fun isActive(x: Int, y: Int) = isActive(toString(x, y))
 
@@ -43,7 +39,6 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
 
     private fun isInactive(cell: Cell) = !isActive(cell.toString())
 
-    private fun countActiveNeighbours(cell: Cell): Long {
-        return cell.neighbours.filter { isActive(it.toString()) }.count().toLong()
-    }
+    private fun countActiveNeighbours(cell: Cell): Long =
+            cell.neighbours.filter { isActive(it.toString()) }.count().toLong()
 }
