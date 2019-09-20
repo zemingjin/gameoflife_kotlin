@@ -1,6 +1,7 @@
 package gameoflife.algorithm
 
 import gameoflife.helper.buildGameOfLife
+import gameoflife.helper.toTime
 
 object GameOfLifePerformance {
     private fun run(params: Array<String>) {
@@ -10,7 +11,7 @@ object GameOfLifePerformance {
         println("Started...")
         val time = System.currentTimeMillis()
         (0 until ITERATIONS).forEach { _ -> gameOfLife = gameOfLife.tick() }
-        println((System.currentTimeMillis() - time).format)
+        println((System.currentTimeMillis() - time).toTime)
     }
 
     @JvmStatic
@@ -22,4 +23,3 @@ object GameOfLifePerformance {
 private const val ITERATIONS = 500
 private const val DEF_TEST_PATH = "src/main/resources/sidecar_gun.seed"
 
-val Long.format: String get() = "Finished in %tM:%tS.%tL".format(this, this, this)
