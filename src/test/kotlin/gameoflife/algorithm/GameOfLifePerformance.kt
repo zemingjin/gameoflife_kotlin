@@ -9,7 +9,7 @@ object GameOfLifePerformance {
 
         println("Started...")
         val time = System.currentTimeMillis()
-        for (i in 0 until ITERATIONS) { gameOfLife = gameOfLife.tick() }
+        (0 until ITERATIONS).forEach { _ -> gameOfLife = gameOfLife.tick() }
         println((System.currentTimeMillis() - time).format)
     }
 
