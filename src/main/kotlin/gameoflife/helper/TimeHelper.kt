@@ -8,7 +8,7 @@ val Long.toTime: String get() = (this + timeOffset).formatTime
 
 private val Long.formatTime: String get() = "%tk:%tM:%tS.%tL".format(this, this, this, this)
 
-private const val SECOND_MILLIS = 1000.toLong()
+private const val SECOND_MILLIS = 1000L
 private const val MINUTE_MILLIS = 60 * SECOND_MILLIS
 private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
