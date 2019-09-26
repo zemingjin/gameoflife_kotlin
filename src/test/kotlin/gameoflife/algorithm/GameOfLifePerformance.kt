@@ -1,6 +1,8 @@
 package gameoflife.algorithm
 
 import gameoflife.helper.buildGameOfLife
+import gameoflife.helper.toTime
+import kotlin.system.measureTimeMillis
 
 class GameOfLifePerformance private constructor() {
 
@@ -9,9 +11,9 @@ class GameOfLifePerformance private constructor() {
         var gameOfLife = params.buildGameOfLife(DEF_TEST_PATH)
 
         println("Started...")
-        val time = System.currentTimeMillis()
-        for (i in 0 until ITERATIONS) { gameOfLife = gameOfLife.tick() }
-        println((System.currentTimeMillis() - time).format)
+        measureTimeMillis {
+            for (i in 1..ITERATIONS) gameOfLife = gameOfLife.tick()
+        }.also { println("Finished in ${it.toTime}.") }
     }
 
     companion object {
@@ -23,5 +25,3 @@ class GameOfLifePerformance private constructor() {
 }
 private const val ITERATIONS = 500
 private const val DEF_TEST_PATH = "src/main/resources/sidecar_gun.seed"
-
-val Long.format: String get() = "Finished in %tM:%tS.%tL".format(this, this, this)
