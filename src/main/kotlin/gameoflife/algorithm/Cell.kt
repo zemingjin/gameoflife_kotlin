@@ -1,25 +1,21 @@
 package gameoflife.algorithm
 
-import java.util.stream.IntStream
-import java.util.stream.Stream
-
 open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
     private val string = toString(x, y)
 
-    val neighbours: Stream<Cell>
-        get() = IntStream.rangeClosed(y-1, y+1).mapToObj { getNeighboursByRow(it) }.flatMap { it.stream() }
+    val neighbours: List<Cell> get() = (y - 1..y + 1).flatMap { it.neighboursByRow }
 
-    private fun getNeighboursByRow(row: Int) = (x-1..x+1).filter { !equals(it, row) }.map { Cell(it, row) }
+    private val Int.neighboursByRow get() = (x - 1..x + 1).filter { !equals(it, this) }.map { Cell(it, this) }
 
-    private fun equals(column: Int, row: Int) = x == column && y == row
+    private fun equals(column: Int, row: Int): Boolean = x == column && y == row
 
-    override fun equals(other: Any?) = if (other is Cell) equals(other.x, other.y) else false
+    override fun equals(other: Any?) = other is Cell && equals(other.x, other.y)
 
-    override fun hashCode() = string.hashCode()
+    override fun hashCode(): Int = string.hashCode()
 
-    override fun toString() = string
+    override fun toString(): String = string
 
-    override fun compareTo(other: Cell) = string.compareTo(other.string)
+    override fun compareTo(other: Cell): Int = string.compareTo(other.string)
 }
 
 fun toString(x: Int, y: Int) = "$x|$y"

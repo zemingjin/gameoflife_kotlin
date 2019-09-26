@@ -5,18 +5,15 @@ import org.junit.Test
 import java.util.HashMap
 
 import org.junit.Assert.*
-import kotlin.streams.toList
 
 class GameOfLifeTest {
-    private val seedHelper = SeedHelper()
-
     @Test
     fun testInit() {
         assertEquals("[]", GameOfLife(HashMap()).liveCells.toString())
     }
 
     private fun mockGameOfLife(seed: String): GameOfLife {
-        return GameOfLife(seedHelper.seedToMap(seed))
+        return GameOfLife(SeedHelper.seedToMap(seed))
     }
 
     @Test(expected = RuntimeException::class)
@@ -36,29 +33,25 @@ class GameOfLifeTest {
     fun testGetDeadCells() {
         val gameOfLife = mockGameOfLife("1|0, 1|1, 1|2")
 
-        assertEquals(12, getNeighbouringDeadCellsList(gameOfLife).size.toLong())
+        assertEquals(12, gameOfLife.inactiveNeighbours.size.toLong())
         assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
-                getNeighbouringDeadCellsList(gameOfLife).toString())
-    }
-
-    private fun getNeighbouringDeadCellsList(gameOfLife: GameOfLife): List<Cell> {
-        return gameOfLife.inactiveNeighbours.toList()
+                gameOfLife.inactiveNeighbours.toString())
     }
 
     @Test
     fun testBlinker() {
         var gameOfLife = mockGameOfLife("1|0, 1|1, 1|2").tick()
 
-        assertEquals("[0|1, 1|1, 2|1]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[0|1, 1|1, 2|1]", gameOfLife.liveCells.sorted().toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|0, 1|1, 1|2]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[1|0, 1|1, 1|2]", gameOfLife.liveCells.sorted().toString())
     }
 
     @Test
     fun testBloker() {
         val gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 2|2")
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2]", sort(gameOfLife.tick().liveCells).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2]", gameOfLife.tick().liveCells.sorted().toString())
     }
 
 
@@ -67,11 +60,11 @@ class GameOfLifeTest {
         var gameOfLife = mockGameOfLife("2|2, 2|3, 3|1, 3|2, 3|3")
 
         gameOfLife = gameOfLife.tick()
-        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[2|1, 2|3, 3|1, 3|3, 4|2]", gameOfLife.liveCells.sorted().toString())
         gameOfLife = gameOfLife.tick()
         assertEquals("[3|1, 3|3, 4|2]", gameOfLife.liveCells.toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[3|2, 4|2]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[3|2, 4|2]", gameOfLife.liveCells.sorted().toString())
         gameOfLife = gameOfLife.tick()
         assertEquals("[]", gameOfLife.liveCells.toString())
     }
@@ -80,11 +73,11 @@ class GameOfLifeTest {
     fun testBeacon() {
         var gameOfLife = mockGameOfLife("1|1, 1|2, 2|1, 3|4, 4|3, 4|4").tick()
 
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.liveCells.sorted().toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[1|1, 1|2, 2|1, 3|4, 4|3, 4|4]", gameOfLife.liveCells.sorted().toString())
         gameOfLife = gameOfLife.tick()
-        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", sort(gameOfLife.liveCells).toString())
+        assertEquals("[1|1, 1|2, 2|1, 2|2, 3|3, 3|4, 4|3, 4|4]", gameOfLife.liveCells.sorted().toString())
     }
 
     @Test
@@ -96,20 +89,12 @@ class GameOfLifeTest {
         assertFalse(gameOfLife.isActive(1, 4))
     }
 
-    private fun sort(list: Collection<Cell>): List<Cell> {
-        return list.stream()
-                .sorted()
-                .toList()
-    }
-
     @Test
     fun testGetInactiveNeibours() {
         val gameOfLife = mockGameOfLife("1|0, 1|1, 1|2")
-        val cells = gameOfLife.inactiveNeighbours.toList()
 
-        assertEquals(12, cells.size.toLong())
+        assertEquals(12, gameOfLife.inactiveNeighbours.size.toLong())
         assertEquals("[0|-1, 1|-1, 2|-1, 0|0, 2|0, 0|1, 2|1, 0|2, 2|2, 0|3, 1|3, 2|3]",
-                cells.toString())
+                gameOfLife.inactiveNeighbours.toString())
     }
-
 }

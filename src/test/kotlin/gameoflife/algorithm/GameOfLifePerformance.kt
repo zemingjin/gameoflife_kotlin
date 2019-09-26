@@ -4,8 +4,7 @@ import gameoflife.helper.buildGameOfLife
 import gameoflife.helper.toTime
 import kotlin.system.measureTimeMillis
 
-class GameOfLifePerformance private constructor() {
-
+object GameOfLifePerformance {
     private fun run(params: Array<String>) {
         println("Testing $DEF_TEST_PATH in $ITERATIONS times...")
         var gameOfLife = params.buildGameOfLife(DEF_TEST_PATH)
@@ -16,12 +15,12 @@ class GameOfLifePerformance private constructor() {
         }.also { println("Finished in ${it.toTime}.") }
     }
 
-    companion object {
-        @JvmStatic
-        fun main(params: Array<String>) {
-            GameOfLifePerformance().run(params)
-        }
+    @JvmStatic
+    fun main(params: Array<String>) {
+        run(params)
     }
 }
+
 private const val ITERATIONS = 500
 private const val DEF_TEST_PATH = "src/main/resources/sidecar_gun.seed"
+
