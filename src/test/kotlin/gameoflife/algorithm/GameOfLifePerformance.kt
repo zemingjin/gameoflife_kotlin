@@ -10,9 +10,8 @@ object GameOfLifePerformance {
         var gameOfLife = params.buildGameOfLife(DEF_TEST_PATH)
 
         println("Started...")
-        measureTimeMillis {
-            for (i in 1..ITERATIONS) gameOfLife = gameOfLife.tick()
-        }.also { println("Finished in ${it.toTime}.") }
+        measureTimeMillis { for (i in 1..ITERATIONS) gameOfLife = gameOfLife.tick() }
+                .apply { println("Finished in $toTime.") }
     }
 
     @JvmStatic
