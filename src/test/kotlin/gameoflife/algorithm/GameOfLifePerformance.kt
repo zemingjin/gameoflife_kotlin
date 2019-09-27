@@ -22,4 +22,3 @@ object GameOfLifePerformance {
 
 private const val ITERATIONS = 500
 private const val DEF_TEST_PATH = "src/main/resources/sidecar_gun.seed"
-
