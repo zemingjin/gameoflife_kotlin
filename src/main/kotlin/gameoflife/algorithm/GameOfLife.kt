@@ -11,23 +11,23 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
                 .map { (it.toString() to it) }
                 .toMap()
 
-    private val nextGenerationCells get() = filteredCells(liveCells) { n -> n in 2..3 }
+    private val nextGenerationCells get() = liveCells.filteredCells { it in 2..3 }
 
-    private val reproducibleCells get() = filteredCells(inactiveNeighbours) { n -> n == 3 }
+    private val reproducibleCells get() = inactiveNeighbours.filteredCells { it == 3 }
 
     val inactiveNeighbours: List<Cell> get() =
         liveCells.flatMap { it.neighbours }
                 .distinct()
-                .filter { isInactive(it) }
+                .filter { it.isInactive }
 
-    private fun filteredCells(cells: List<Cell>, ifNotFiltered: (Int) -> Boolean): List<Cell> =
-            cells.filter { ifNotFiltered(countActiveNeighbours(it)) }
+    private fun List<Cell>.filteredCells(ifNotFiltered: (Int) -> Boolean): List<Cell> =
+            filter { ifNotFiltered(it.countActiveNeighbours) }
 
-    fun isActive(x: Int, y: Int) = isActive(toString(x, y))
+    fun isActive(x: Int, y: Int) = toString(x, y).isActive
 
-    private fun isActive(key: String) = liveCellsMap.containsKey(key)
+    private val String.isActive: Boolean get() = liveCellsMap.containsKey(this)
 
-    private fun isInactive(cell: Cell) = !isActive(cell.toString())
+    private val Cell.isInactive: Boolean get() = !toString().isActive
 
-    private fun countActiveNeighbours(cell: Cell): Int = cell.neighbours.filter { isActive(it.toString()) }.count()
+    private val Cell.countActiveNeighbours: Int get() = neighbours.filter { it.toString().isActive }.count()
 }
