@@ -7,8 +7,8 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
                 .let { it?.values?.toList() }
                 ?: emptyList()
 
-    private val isReproducible: (Long) -> Boolean = { n -> n == 3L }
-    private val isNextGeneration: (Long) -> Boolean = { n -> n in 2..3 }
+    private val isReproducible: (Int) -> Boolean = { n -> n == 3 }
+    private val isNextGeneration: (Int) -> Boolean = { n -> n in 2..3 }
 
     fun tick(): GameOfLife = GameOfLife(nextLiveCellsMap)
 
@@ -16,7 +16,6 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
         (nextGenerationCells + reproducibleCells)
                 .distinct()
                 .map { (it.toString() to it) }
-                .toList()
                 .toMap()
 
     private val nextGenerationCells get() = filteredCells(liveCells, isNextGeneration)
@@ -24,13 +23,11 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
     private val reproducibleCells get() = filteredCells(inactiveNeighbours, isReproducible)
 
     val inactiveNeighbours: List<Cell> get() =
-        liveCells
-                .map { it.neighbours }
-                .flatten()
+        liveCells.flatMap { it.neighbours }
                 .distinct()
                 .filter { isInactive(it) }
 
-    private fun filteredCells(cells: List<Cell>, ifNotFiltered: (Long) -> Boolean): List<Cell> =
+    private fun filteredCells(cells: List<Cell>, ifNotFiltered: (Int) -> Boolean): List<Cell> =
             cells.filter { ifNotFiltered(countActiveNeighbours(it)) }
 
     fun isActive(x: Int, y: Int) = isActive(toString(x, y))
@@ -39,6 +36,6 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
 
     private fun isInactive(cell: Cell) = !isActive(cell.toString())
 
-    private fun countActiveNeighbours(cell: Cell): Long =
-            cell.neighbours.filter { isActive(it.toString()) }.count().toLong()
+    private fun countActiveNeighbours(cell: Cell): Int =
+            cell.neighbours.filter { isActive(it.toString()) }.count()
 }
