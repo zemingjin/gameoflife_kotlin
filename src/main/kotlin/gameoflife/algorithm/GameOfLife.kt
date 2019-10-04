@@ -1,11 +1,7 @@
 package gameoflife.algorithm
 
 class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
-    val liveCells: List<Cell> get() =
-        liveCellsMap
-                .takeIf { it.isNotEmpty() }
-                .let { it?.values?.toList() }
-                ?: emptyList()
+    val liveCells: List<Cell> get() = if (liveCellsMap.isNotEmpty()) liveCellsMap.values.toList() else emptyList()
 
     private val isReproducible: (Int) -> Boolean = { n -> n == 3 }
     private val isNextGeneration: (Int) -> Boolean = { n -> n in 2..3 }
@@ -32,10 +28,9 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
 
     fun isActive(x: Int, y: Int) = isActive(toString(x, y))
 
-    private fun isActive(key: String) = liveCellsMap[key] != null
+    private fun isActive(key: String) = liveCellsMap.containsKey(key)
 
     private fun isInactive(cell: Cell) = !isActive(cell.toString())
 
-    private fun countActiveNeighbours(cell: Cell): Int =
-            cell.neighbours.filter { isActive(it.toString()) }.count()
+    private fun countActiveNeighbours(cell: Cell): Int = cell.neighbours.filter { isActive(it.toString()) }.count()
 }
