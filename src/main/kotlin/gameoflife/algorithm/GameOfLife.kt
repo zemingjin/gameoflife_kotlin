@@ -3,9 +3,6 @@ package gameoflife.algorithm
 class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
     val liveCells: List<Cell> get() = if (liveCellsMap.isNotEmpty()) liveCellsMap.values.toList() else emptyList()
 
-    private val isReproducible: (Int) -> Boolean = { n -> n == 3 }
-    private val isNextGeneration: (Int) -> Boolean = { n -> n in 2..3 }
-
     fun tick(): GameOfLife = GameOfLife(nextLiveCellsMap)
 
     private val nextLiveCellsMap: Map<String, Cell> get() =
@@ -14,9 +11,9 @@ class GameOfLife(private val liveCellsMap: Map<String, Cell>) {
                 .map { (it.toString() to it) }
                 .toMap()
 
-    private val nextGenerationCells get() = filteredCells(liveCells, isNextGeneration)
+    private val nextGenerationCells get() = filteredCells(liveCells) { n -> n in 2..3 }
 
-    private val reproducibleCells get() = filteredCells(inactiveNeighbours, isReproducible)
+    private val reproducibleCells get() = filteredCells(inactiveNeighbours) { n -> n == 3 }
 
     val inactiveNeighbours: List<Cell> get() =
         liveCells.flatMap { it.neighbours }
