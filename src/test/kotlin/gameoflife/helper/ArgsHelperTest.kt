@@ -1,6 +1,6 @@
 package gameoflife.helper
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 class ArgsHelperTest {
@@ -8,5 +8,11 @@ class ArgsHelperTest {
     fun testWaitTime() {
         assertEquals(200, arrayOf("-w200").waitTime)
         assertEquals(100, emptyArray<String>().waitTime)
+    }
+
+    @Test
+    fun testIsAutomation() {
+        assertTrue(arrayOf("-s").isAutomaton)
+        assertFalse(arrayOf("-ss").isAutomaton)
     }
 }

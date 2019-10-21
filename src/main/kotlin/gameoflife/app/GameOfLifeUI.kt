@@ -121,7 +121,7 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     private fun calculateInsertsValue(calculate: (Insets) -> Int) = calculate(window.insets)
 
     private fun evolve() {
-        paint.gameOfLife = gameOfLife!!.tick()
+        paint.tick()
         evolveToggle++
         window.title = "$path - #$iteration"
         iteration++

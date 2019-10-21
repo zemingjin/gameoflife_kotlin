@@ -36,4 +36,8 @@ class Paint(private val panel: JPanel) {
     private fun paintRows(paint: (Int) -> (Int) -> Unit) = (0 until boundary!!.y).forEach { paintRow(paint(it)) }
 
     fun paint(graphics: Graphics) { paints.forEach { paintRows(it(graphics)) } }
+
+    fun tick() {
+        gameOfLife = gameOfLife!!.tick()
+    }
 }
