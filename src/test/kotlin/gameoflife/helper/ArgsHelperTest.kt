@@ -12,7 +12,7 @@ class ArgsHelperTest {
 
     @Test
     fun testIsAutomation() {
-        assertTrue(arrayOf("-s").isAutomaton)
-        assertFalse(arrayOf("-ss").isAutomaton)
+        assertFalse(arrayOf("-s").isAutomaton)
+        assertTrue(arrayOf("-ss").isAutomaton)
     }
 }
