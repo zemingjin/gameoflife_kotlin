@@ -16,5 +16,3 @@ fun loadSeeds(path: String): Array<String> =
             throw RuntimeException(ex)
 
         }
-
-fun format(time: Long) = String.format("%tM:%tS.%tL", time, time, time)

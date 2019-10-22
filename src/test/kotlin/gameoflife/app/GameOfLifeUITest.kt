@@ -3,6 +3,7 @@ package gameoflife.app
 import gameoflife.helper.*
 
 import java.util.logging.Logger
+import kotlin.system.measureTimeMillis
 
 internal class GameOfLifeUITest private constructor(params: Array<String>) : ContinueCheck {
 
@@ -24,9 +25,8 @@ internal class GameOfLifeUITest private constructor(params: Array<String>) : Con
 
         @JvmStatic
         fun main(params: Array<String>) {
-            val time = System.currentTimeMillis()
-            GameOfLifeUITest(params).gameOfLifeUI.run()
-            LOG.info("Total time: " + format(System.currentTimeMillis() - time))
+            measureTimeMillis { GameOfLifeUITest(params).gameOfLifeUI.run() }
+                    .apply {  LOG.info("Total time: $toTime") }
         }
     }
 }

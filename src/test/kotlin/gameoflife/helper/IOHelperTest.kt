@@ -11,6 +11,11 @@ class IOHelperTest {
         assertEquals(BEACON, loadSeeds(BEACON_FILE).contentToString())
     }
 
+    @Test(expected = RuntimeException::class)
+    fun testLoadSeedsException() {
+        loadSeeds("abc")
+    }
+
     companion object {
         private const val BEACON_FILE = "src/main/resources/beacon.seed"
         private const val BEACON = "[#P 4|4, OO.., OO.., ..OO, ..OO]"
