@@ -9,6 +9,11 @@ class SeedHelperTest {
         assertEquals("{1|1=1|1, 1|2=1|2, 1|3=1|3}", SeedHelper.seedToMap("1|1, 1|2, 1|3").toString())
     }
 
+    @Test
+    fun testGetBoundaryFromHeader() {
+        assertEquals("14|18", SeedHelper.getBoundaryFromHeader(arrayOf("#P 14|18")).toString())
+    }
+
     @Test(expected = RuntimeException::class)
     fun testSeedToMapWithNull() {
         SeedHelper.seedToMap((null as String?)!!)
