@@ -3,7 +3,6 @@ package gameoflife.app
 import gameoflife.algorithm.GameOfLife
 import gameoflife.app.GameOfLifeUI.Companion.MAX_CELL_SIZE
 import java.awt.Graphics
-import java.util.stream.IntStream
 import javax.swing.JPanel
 
 class Paint(private val panel: JPanel) {
@@ -31,7 +30,7 @@ class Paint(private val panel: JPanel) {
 
     private fun getColor(x: Int, y: Int) = if (gameOfLife!!.isActive(x, y)) panel.foreground else panel.background
 
-    private fun paintRow(actor: (Int) -> Unit) { IntStream.range(0, boundary!!.x).forEach { actor(it) } }
+    private fun paintRow(actor: (Int) -> Unit) { (0..boundary!!.x).forEach { actor(it) } }
 
     private fun paintRows(paint: (Int) -> (Int) -> Unit) = (0 until boundary!!.y).forEach { paintRow(paint(it)) }
 
