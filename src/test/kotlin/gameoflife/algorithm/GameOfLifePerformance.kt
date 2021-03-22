@@ -12,7 +12,9 @@ object GameOfLifePerformance {
 
         println("Started...")
         measureTimeMillis {
-            for (i in (1..ITERATIONS)) { gameOfLife = gameOfLife.tick() }
+            for (i in (1..ITERATIONS)) {
+                gameOfLife = gameOfLife.tick()
+            }
         }.apply { println("Finished in $toTime.") }
     }
 }

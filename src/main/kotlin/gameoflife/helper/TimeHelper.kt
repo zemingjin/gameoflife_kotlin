@@ -14,8 +14,9 @@ private const val HOUR_MILLIS = 60 * MINUTE_MILLIS
 
 private val timeOffset: Long get() = HOUR_MILLIS - localOffsetMillis
 
-private val localOffsetMillis: Long get() =
-    LocalDateTime.now()
+private val localOffsetMillis: Long
+    get() =
+        LocalDateTime.now()
             .atZone(ZoneId.systemDefault())
             .offset
             .totalMillis

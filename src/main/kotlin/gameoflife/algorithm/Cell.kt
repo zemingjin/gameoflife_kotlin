@@ -1,7 +1,7 @@
 package gameoflife.algorithm
 
 open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
-    private val string = toString(x, y)
+    private val name = toName(x, y)
 
     val neighbours: List<Cell> get() = (y - 1..y + 1).flatMap { it.neighboursByRow }
 
@@ -10,12 +10,9 @@ open class Cell(val x: Int, val y: Int) : Comparable<Cell> {
     private fun equals(column: Int, row: Int): Boolean = x == column && y == row
 
     override fun equals(other: Any?) = other is Cell && equals(other.x, other.y)
-
-    override fun hashCode(): Int = string.hashCode()
-
-    override fun toString(): String = string
-
-    override fun compareTo(other: Cell): Int = string.compareTo(other.string)
+    override fun hashCode() = name.hashCode()
+    override fun toString() = name
+    override fun compareTo(other: Cell) = name.compareTo(other.name)
 }
 
-fun toString(x: Int, y: Int) = "$x|$y"
+fun toName(x: Int, y: Int) = "$x|$y"

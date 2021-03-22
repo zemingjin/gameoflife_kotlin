@@ -16,7 +16,9 @@ import java.awt.event.KeyEvent
 import javax.swing.JPanel
 
 class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
-    var isContinue = object : ContinueCheck { override fun isContinue() = isContinueFlag }
+    var isContinue = object : ContinueCheck {
+        override fun isContinue() = isContinueFlag
+    }
     private val gameOfLife get() = paint.gameOfLife
 
     private val window = JFrame()
@@ -25,7 +27,7 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     private var automaton = true
     private var path: String? = null
     private var iteration: Int = 0
-    private var waitTime: Int = 0
+    private var waitTime: Long = 0
     private val screenSize: Dimension get() = Toolkit.getDefaultToolkit().screenSize
     private val isContinueToEvolve get() = automaton || evolveToggle == 0
     private val boundary get() = paint.boundary
@@ -33,7 +35,7 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
 
     init {
         params.takeIf { it.isNotEmpty() }
-                .let { this.setup(it!!) }
+            .let { this.setup(it!!) }
     }
 
     private fun setup(params: Array<String>): GameOfLifeUI {
@@ -41,7 +43,7 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
         paint.gameOfLife = buildGameOfLife(loadSeeds(path!!))
         paint.gameOfLife = gameOfLife
         automaton = params.isAutomaton
-        waitTime = params.waitTime
+        waitTime = params.waitTime.toLong()
         return this
     }
 
@@ -50,7 +52,7 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
         return GameOfLife(SeedHelper.seedToMap(seeds))
     }
 
-    fun setWaitTime(waitTime: Int): GameOfLifeUI {
+    fun setWaitTime(waitTime: Long): GameOfLifeUI {
         this.waitTime = waitTime
         return this
     }
@@ -86,38 +88,32 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
 
         setSize(width, height)
         isFocusable = true
-        window.title = getTitle(path)
+        window.title = title(path)
         window.isResizable = false
         window.isVisible = true
-        window.setBounds(getHorizontalPosition(width), getVerticalPosition(height),
-                getFrameWidth(width), getFrameHeight(height))
+        window.setBounds(width.horizontalPosition, height.verticalPosition, width.frameWidth, height.frameHeight)
         window.defaultCloseOperation = WindowConstants.EXIT_ON_CLOSE
         window.contentPane.add(this)
     }
 
-    private val calculateCellSize: Int get() {
-        val screenSize = screenSize
-        return calculateCellSize(screenSize.height, boundary!!.y.toDouble())
+    private val calculateCellSize: Int
+        get() =
+            calculateCellSize(screenSize.height, boundary!!.y.toDouble())
                 .coerceAtMost(calculateCellSize(screenSize.width, boundary!!.x.toDouble()))
                 .coerceAtMost(MAX_CELL_SIZE)
                 .coerceAtLeast(MIN_CELL_SIZE)
-    }
 
     private fun calculateCellSize(screenSize: Int, numberOfCells: Double) =
-            ((screenSize * 3).toDouble() / 4.0 / numberOfCells).toInt()
+        ((screenSize * 3).toDouble() / 4.0 / numberOfCells).toInt()
 
     private fun calculatePanelSize(position: Double) = (position * cellSize!!).toInt()
 
-    private fun getHorizontalPosition(panelWidth: Int) = calculatePosition(screenSize.width, getFrameWidth(panelWidth))
-
-    private fun getVerticalPosition(panelHeight: Int) = calculatePosition(screenSize.height, getFrameHeight(panelHeight))
-
+    private val Int.horizontalPosition get() = calculatePosition(screenSize.width, frameWidth)
+    private val Int.verticalPosition get() = calculatePosition(screenSize.height, frameHeight)
     private fun calculatePosition(screenSize: Int, frameSize: Int) = (screenSize - frameSize) / 2
 
-    private fun getFrameWidth(panelWidth: Int) = panelWidth + calculateInsertsValue { it.left + it.right }
-
-    private fun getFrameHeight(panelHeight: Int) = panelHeight + calculateInsertsValue { it.top + it.bottom }
-
+    private val Int.frameWidth get() = this + calculateInsertsValue { it.left + it.right }
+    private val Int.frameHeight get() = this + calculateInsertsValue { it.top + it.bottom }
     private fun calculateInsertsValue(calculate: (Insets) -> Int) = calculate(window.insets)
 
     private fun evolve() {
@@ -128,29 +124,27 @@ class GameOfLifeUI(params: Array<String>) : JPanel(), KeyEventPostProcessor {
     }
 
     private val cellSize get() = paint.cellSize
-    override fun paint(graphics: Graphics) { paint.paint(graphics) }
+    private fun title(path: String?) = "Seed: $path"
 
-    @Synchronized
+    override fun paint(graphics: Graphics) = paint.paint(graphics)
+
     private fun waitAWhile() {
-        if (waitTime > 0) {
-              Thread.sleep(waitTime.toLong())
-        }
+        if (waitTime > 0) Thread.sleep(waitTime)
     }
 
     override fun postProcessKeyEvent(e: KeyEvent): Boolean {
         var result = false
-        if (e.keyCode == KeyEvent.VK_ESCAPE) {
-            isContinueFlag = false
-        } else if (e.keyCode == KeyEvent.VK_SPACE) {
-            automaton = e.isControlDown
-            evolveToggle = if (evolveToggle < 2) evolveToggle + 1 else 0
-            e.consume()
-            result = true
+        when (e.keyCode) {
+            KeyEvent.VK_ESCAPE -> isContinueFlag = false
+            KeyEvent.VK_SPACE -> {
+                automaton = e.isControlDown
+                evolveToggle = if (evolveToggle < 2) evolveToggle + 1 else 0
+                e.consume()
+                result = true
+            }
         }
         return result
     }
-
-    private fun getTitle(path: String?) = "Seed: $path"
 
     companion object {
         const val MAX_CELL_SIZE = 100

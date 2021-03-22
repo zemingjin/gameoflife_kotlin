@@ -24,9 +24,9 @@ internal class GameOfLifeUITest private constructor(params: Array<String>) : Con
         private val LOG = Logger.getLogger(GameOfLifeUITest::class.java.name)
 
         @JvmStatic
-        fun main(params: Array<String>) {
+        suspend fun main(params: Array<String>) {
             measureTimeMillis { GameOfLifeUITest(params).gameOfLifeUI.run() }
-                    .apply {  LOG.info("Total time: $toTime") }
+                .apply { LOG.info("Total time: $toTime") }
         }
     }
 }
